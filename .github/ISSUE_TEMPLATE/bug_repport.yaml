@@ -40,14 +40,15 @@ body:
   attributes:
     label: Environment
     description: |
-      examples:
-         - Node : 16.9.0
-         - C++ : 17 (GCC 8.1.0)
-         - Python : 3.10.5 
+      usage:
+         - Language Version: Version
+      example:
+         - Nodejs : 16.9.0
       **Note**: "Ayaya requires Nodejs 16.9.0 | Python 3 | C++17"
     value: |
-        - OS:
         - Node:
+        - Cpp:
+        - Python:
     render: markdown
   validations:
     required: false
