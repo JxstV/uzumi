@@ -45,7 +45,7 @@ body:
       examples:
         - **OS**: Ubuntu 20.04
         - **Node**: 13.14.0
-     placeholder: "Ayaya requires "
+    placeholder: "Ayaya requires Nodejs 16.9.0 | Python 3 | C++17"
     value: |
         - OS:
         - Node:
