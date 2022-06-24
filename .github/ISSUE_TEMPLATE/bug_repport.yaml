@@ -13,8 +13,6 @@ body:
       - JavaScript (Deno)
       - C++
       - Python
-  validation:
-    required: true
 - type: textarea
   attributes:
     label: Current Behavior
