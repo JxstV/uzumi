@@ -41,9 +41,10 @@ body:
     label: Environment
     description: |
       examples:
-        - **OS**: Ubuntu 20.04
-        - **Node**: 13.14.0
-    placeholder: "Ayaya requires Nodejs 16.9.0 | Python 3 | C++17"
+         - Node : 16.9.0
+         - C++ : 17 (GCC 8.1.0)
+         - Python : 3.10.5 
+      **Note**: "Ayaya requires Nodejs 16.9.0 | Python 3 | C++17"
     value: |
         - OS:
         - Node:
