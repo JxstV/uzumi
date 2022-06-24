@@ -45,10 +45,6 @@ body:
       example:
          - Nodejs : 16.9.0
       **Note**: "Ayaya requires Nodejs 16.9.0 | Python 3 | C++17"
-    value: |
-        - Node:
-        - Cpp:
-        - Python:
     render: markdown
   validations:
     required: false
