@@ -8,10 +8,10 @@ body:
     label: Language
     description: What language is being used.
     options:
-      -label: JavaScript (NodeJS)
-      -label: JavaScript (Deno)
-      -label: C++
-      -label: Python
+      - JavaScript (NodeJS)
+      - JavaScript (Deno)
+      - C++
+      - Python
   validation:
     required: true
 - type: textarea
