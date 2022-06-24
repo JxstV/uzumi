@@ -3,17 +3,16 @@ description: File a bug/issue
 title: "[BUG] <title>"
 labels: [Bug]
 body:
--type: checkboxes
+- type: dropdown
+  id: language
   attributes:
     label: Language
     description: What language is being used.
     options:
-      -label: JavaScript (NodeJS)
-      -label: JavaScript (Deno)
-      -label: C++
-      -label: Python
-  validation:
-    required: true
+      - JavaScript (NodeJS)
+      - JavaScript (Deno)
+      - C++
+      - Python
 - type: textarea
   attributes:
     label: Current Behavior
@@ -41,15 +40,11 @@ body:
   attributes:
     label: Environment
     description: |
-      examples:
-        - **OS**: Ubuntu 20.04
-        - **Node**: 13.14.0
-
-     placeholder: "Ayaya requires "
-    value: |
-        - OS:
-        - Node:
-        - npm:
+      usage:
+         - Language Version: Version
+      example:
+         - Nodejs : 16.9.0
+      **Note**: "Ayaya requires Nodejs 16.9.0 | Python 3 | C++17"
     render: markdown
   validations:
     required: false
