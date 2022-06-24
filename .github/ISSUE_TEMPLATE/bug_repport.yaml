@@ -45,12 +45,10 @@ body:
       examples:
         - **OS**: Ubuntu 20.04
         - **Node**: 13.14.0
-
      placeholder: "Ayaya requires "
     value: |
         - OS:
         - Node:
-        - npm:
     render: markdown
   validations:
     required: false
