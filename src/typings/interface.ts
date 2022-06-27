@@ -1,5 +1,7 @@
+import { Group } from "../group/index.ts";
 import { Intents } from "./enums.ts";
-import { integer, snowflake } from "./types.ts";
+import { GUILD_CREATE, MESSAGE_CREATE } from "./eventInterfaces.ts";
+import { integer, SnakeToCamelCaseNested, Snowflake, snowflake } from "./types.ts";
 
 export interface WSData {
   op: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
@@ -179,7 +181,25 @@ export interface ClientOptions {
   wsOptions?: {
     protocol: string | string[] | undefined;
   };
+  cacheOption?: {
+    messages?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheMessageData>>;
+    guilds?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheGuildData>>;
+    channels?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
+    emojis?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawEmojiData>>;
+    users?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheUserData>>;
+    threads?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
+  };
   intents: Array<keyof typeof Intents>;
+}
+
+export interface CacheOption<K, V> extends groupOptions {
+  sweepFunc?: (
+    val: V,
+    _key: K,
+    _msgMap: Group<K, V>,
+  ) => boolean;
+  cacheFunc:(val:V,_key:K) => boolean;
+  interval:number;
 }
 
 export interface IdentifyOptions {
@@ -260,4 +280,254 @@ export interface rawTeamMemberData {
   permissions: Array<string>;
   team_id: snowflake;
   user: rawUserData;
+}
+
+export interface rawGuildData {
+  id: snowflake; //	guild id
+  name: string; //	guild name (2-100 characters, excluding trailing and leading whitespace)
+  icon: string | null; //	icon hash
+  icon_hash?: string | null; //	icon hash, returned when in the template object
+  splash: string | null; //	splash hash
+  discovery_splash: string | null; //	discovery splash hash; only present for guilds with the "DISCOVERABLE" feature
+  owner?: boolean; //	true if the user is the owner of the guild
+  owner_id: snowflake; //	id of owner
+  permissions?: string; //	total permissions for the user in the guild (excludes overwrites)
+  afk_channel_id: snowflake | null; //	id of afk channel
+  afk_timeout: integer; //	afk timeout in seconds
+  widget_enabled?: boolean; //	true if the server widget is enabled
+  widget_channel_id?: snowflake | null; //	the channel id that the widget will generate an invite to, or null if set to no invite
+  verification_level: integer; //	verification level required for the guild
+  default_message_notifications: integer; //	default message notifications level
+  explicit_content_filter: integer; //	explicit content filter level
+  roles: Array<rawRoleData>; //	roles in the guild
+  emojis: Array<rawEmojiData>; //	custom guild emojis
+  features: Array<string>; //	enabled guild features
+  mfa_level: integer; //	required MFA level for the guild
+  application_id: snowflake | null; //	application id of the guild creator if it is bot-created
+  system_channel_id: snowflake | null; //	the id of the channel where guild notices such as welcome messages and boost events are posted
+  system_channel_flags: integer; //	system channel flags
+  rules_channel_id: snowflake | null; //	the id of the channel where Community guilds can display rules and/or guidelines
+  max_presences?: integer | null; //	the maximum number of presences for the guild (null is always returned, apart from the largest of guilds)
+  max_members?: integer; //	the maximum number of members for the guild
+  vanity_url_code: string | null; //	the vanity url code for the guild
+  description: string | null; //	the description of a guild
+  banner: string | null; //	banner hash
+  premium_tier: integer; //	premium tier (Server Boost level)
+  premium_subscription_count?: integer; //	the number of boosts this guild currently has
+  preferred_locale: string; //	the preferred locale of a Community guild; used in server discovery and notices from Discord, and sent in interactions; defaults to "en-US"
+  public_updates_channel_id: snowflake | null; //	the id of the channel where admins and moderators of Community guilds receive notices from Discord
+  max_video_channel_users?: integer; //	the maximum amount of users in a video channel
+  approximate_member_count?: integer; //	approximate number of members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true
+  approximate_presence_count?: integer; //	approximate number of non-offline members in this guild, returned from the GET /guilds/<id> endpoint when with_counts is true
+  welcome_screen?: rawWelcomeData; //	the welcome screen of a Community guild, shown to new members, returned in an Invite's guild object
+  nsfw_level: integer; //	guild NSFW level
+  stickers?: Array<rawStickerData>; //	custom guild stickers
+  premium_progress_bar_enabled: boolean; //	whether the guild has the boost progress bar enabled
+}
+export interface rawEmojiData {
+  id: snowflake | null; //	emoji id
+  name: string | null; // (can be null only in reaction emoji objects)	emoji name
+  roles?: Array<rawRoleData>; // ids	roles allowed to use this emoji
+  user?: rawUserData; //	user that created this emoji
+  require_colons?: boolean; //	whether this emoji must be wrapped in colons
+  managed?: boolean; //	whether this emoji is managed
+  animated?: boolean; //	whether this emoji is animated
+  available?: boolean; //	whether this emoji can be used, may be false due to loss of Server Boosts
+}
+export interface rawWelcomeData {
+  description: string | null;
+  welcome_channels: {
+    channel_id: snowflake;
+    description: string;
+    emoji_id: snowflake | null;
+    emoji_name: string | null;
+  }[];
+}
+
+export interface rawStickerData {
+  id: snowflake; //	id of the sticker
+  pack_id?: snowflake; //	for standard stickers, id of the pack the sticker is from
+  name: string; //	name of the sticker
+  description: string | null; //	description of the sticker
+  tags: string; //	autocomplete/suggestion tags for the sticker (max 200 characters)
+  asset: string; //	Deprecated previously the sticker asset hash, now an empty string
+  type: integer; //	type of sticker
+  format_type: integer; //	type of sticker format
+  available?: boolean; //	whether this guild sticker can be used, may be false due to loss of Server Boosts
+  guild_id?: snowflake; //	id of the guild that owns this sticker
+  user?: rawUserData; //	the user that uploaded the guild sticker
+  sort_value?: integer; //	the standard sticker's sort order within its pack
+}
+export interface rawVoiceStateData {
+  guild_id?: snowflake; //	the guild id this voice state is for
+  channel_id: snowflake | null; //	the channel id this user is connected to
+  user_id: snowflake; //	the user id this voice state is for
+  member?: rawMemberData; //	the guild member this voice state is for
+  session_id: string; //	the session id for this voice state
+  deaf: boolean; //	whether this user is deafened by the server
+  mute: boolean; //	whether this user is muted by the server
+  self_deaf: boolean; //	whether this user is locally deafened
+  self_mute: boolean; //	whether this user is locally muted
+  self_stream?: boolean; //	whether this user is streaming using "Go Live"
+  self_video: boolean; //	whether this user's camera is enabled
+  suppress: boolean; //	whether this user is muted by the current user
+  request_to_speak_timestamp: string | null; //	the time at which the user requested to speak
+}
+
+export interface rawChannelData {
+  id: snowflake; //	the id of this channel
+  type: integer; //	the type of channel
+  guild_id?: snowflake; //	the id of the guild (may be missing for some channel objects received over gateway guild dispatches)
+  position?: integer; //	sorting position of the channel
+  permission_overwrites?: Array<rawOverwriteData>; //	explicit permission overwrites for members and roles
+  name?: string | null; //	the name of the channel (1-100 characters)
+  topic?: string | null; //	the channel topic (0-1024 characters)
+  nsfw?: boolean; //	whether the channel is nsfw
+  last_message_id?: snowflake | null; //	the id of the last message sent in this channel (or thread for GUILD_FORUM channels) (may not point to an existing or valid message or thread)
+  bitrate?: integer; //	the bitrate (in bits) of the voice channel
+  user_limit?: integer; //	the user limit of the voice channel
+  rate_limit_per_user?: integer; //	amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected
+  recipients?: Array<rawUserData>; //	the recipients of the DM
+  icon?: string | null; //	icon hash of the group DM
+  owner_id: snowflake; //	id of the creator of the group DM or thread
+  application_id?: snowflake; //	application id of the group DM creator if it is bot-created
+  parent_id?: snowflake | null; //	for guild channels: id of the parent category for a channel (each parent category can contain up to 50 channels), for threads: id of the text channel this thread was created
+  last_pin_timestamp?: string | null; //	when the last pinned message was pinned. This may be null in events such as GUILD_CREATE when a message is not pinned.
+  rtc_region?: string | null; //	voice region id for the voice channel, automatic when set to null
+  video_quality_mode?: integer; //	the camera video quality mode of the voice channel, 1 when not present
+  message_count?: integer; //	an approximate count of messages in a thread, stops counting at 50
+  member_count?: integer; //	an approximate count of users in a thread, stops counting at 50
+  thread_metadata?: rawThreadMetaData; //	thread-specific fields not needed by other channels
+  member?: rawThreadMemberData; //	thread member object for the current user, if they have joined the thread, only included on certain API endpoints
+  default_auto_archive_duration?: integer; //	default duration that the clients (not the API) will use for newly created threads, in minutes, to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
+  permissions?: string; //	computed permissions for the invoking user in the channel, including overwrites, only included when part of the resolved data received on a slash command interaction
+  flags?: integer; //	channel flags combined as a bitfield
+}
+export interface rawThreadMetaData {
+  archived: boolean; //	whether the thread is archived
+  auto_archive_duration: integer; //	duration in minutes to automatically archive the thread after recent activity, can be set to: 60, 1440, 4320, 10080
+  archive_timestamp: string; //	timestamp when the thread's archive status was last changed, used for calculating recent activity
+  locked: boolean; //	whether the thread is locked; when a thread is locked, only users with MANAGE_THREADS can unarchive it
+  invitable?: boolean; //	whether non-moderators can add other non-moderators to a thread; only available on private threads
+  create_timestamp?: string | null; //	timestamp when the thread was created; only populated for threads created after 2022-01-09
+}
+
+export interface rawThreadMemberData {
+  id?: snowflake; //	the id of the thread
+  user_id?: snowflake; //	the id of the user
+  join_timestamp: string; //	the time the current user last joined the thread
+  flags: integer; //	any user-thread settings, currently only used for notifications
+}
+
+export interface rawOverwriteData {
+  id: snowflake; //	role or user id
+  type: 0 | 1; //	either 0 (role) or 1 (member)
+  allow: string; //	permission bit set
+  deny: string; //	permission bit set
+}
+
+export interface rawPresenceUpdateData {
+  user: rawUserData; //	the user presence is being updated for
+  guild_id: snowflake; //	id of the guild
+  status: "idle" | "dnd" | "online" | "offline";
+  activities: Array<rawActivityData>; //	user's current activities
+  client_status: rawClientStatusData; //	user's platform-dependent status
+}
+
+export interface rawClientStatusData {
+  desktop?: string; //	the user's status set for an active desktop (Windows, Linux, Mac) application session
+  mobile?: string; //	the user's status set for an active mobile (iOS, Android) application session
+  web?: string; //	the user's status set for an active web (browser, bot account) application session
+}
+
+export interface rawActivityData {
+  name: string; //	the activity's name
+  type: integer; //	activity type
+  url?: string | null; //	stream url, is validated when type is 1
+  created_at: integer; //	unix timestamp (in milliseconds) of when the activity was added to the user's session
+  timestamps?: {
+    start?: integer; //	unix time (in milliseconds) of when the activity started
+    end?: integer; //	unix time (in milliseconds) of when the activity ends
+  };
+  application_id?: snowflake; //	application id for the game
+  details?: string | null; //	what the player is currently doing
+  state?: string | null; //	the user's current party status
+  emoji?: rawEmojiData; //	the emoji used for a custom status
+  party?: {
+    id?: string; //	the id of the party
+    size?: [current_size: integer, max_size: integer]; //	used to show the party's current and maximum size
+  };
+  assets?: {
+    large_image?: string; //	see Activity Asset Image
+    large_text?: string; //	text displayed when hovering over the large image of the activity
+    small_image?: string; //	see Activity Asset Image
+    small_text?: string; //	text displayed when hovering over the small image of the activity
+  };
+  secrets?: {
+    join?: string; //	the secret for joining a party
+    spectate?: string; //	the secret for spectating a game
+    match?: string; //	the secret for a specific instanced match
+  };
+  instance?: boolean; //	whether or not the activity is an instanced game session
+  flags?: integer; //	activity flags ORd together, describes what the payload includes
+  buttons?: {
+    label: string; //	the text shown on the button (1-32 characters)
+    url: string; //	the url opened when clicking the button (1-512 characters)
+  }[];
+}
+
+export interface rawStageInstanceData {
+  id: snowflake; //	The id of this Stage instance
+  guild_id: snowflake; //	The guild id of the associated Stage channel
+  channel_id: snowflake; //	The id of the associated Stage channel
+  topic: string; //	The topic of the Stage instance (1-120 characters)
+  privacy_level: integer; //	The privacy level of the Stage instance
+  discoverable_disabled: boolean; //	Whether or not Stage Discovery is disabled (deprecated)
+  guild_scheduled_event_id: snowflake | null; //	The id of the scheduled event for this Stage instance
+}
+
+export interface rawScheduledEventsData {
+  id: snowflake; //	the id of the scheduled event
+  guild_id: snowflake; //	the guild id which the scheduled event belongs to
+  channel_id: snowflake | null; //	the channel id in which the scheduled event will be hosted, or null if scheduled entity type is EXTERNAL
+  creator_id?: snowflake | null; //	the id of the user that created the scheduled event *
+  name: string; //	the name of the scheduled event (1-100 characters)
+  description: string | null; //	the description of the scheduled event (1-1000 characters)
+  scheduled_start_time: string; //	the time the scheduled event will start
+  scheduled_end_time: string; //	the time the scheduled event will end, required if entity_type is EXTERNAL
+  privacy_level: integer; //	the privacy level of the scheduled event
+  status: integer; //	event status	the status of the scheduled event
+  entity_type: integer; //	the type of the scheduled event
+  entity_id: snowflake | null; //	the id of an entity associated with a guild scheduled event
+  entity_metadata: { location?: string } | null; //	additional metadata for the guild scheduled event
+  creator?: rawUserData; //	the user that created the scheduled event
+  user_count?: integer; //	the number of users subscribed to the scheduled event
+  image?: string | null; //	the cover image hash of the scheduled event
+}
+
+export interface rawCacheUserData extends rawUserData {
+  guilds: Array<Snowflake>;
+  marked: boolean;
+}
+
+export interface rawCacheChannelData extends rawChannelData {
+  messages: rawChannelData["type"] extends 13 ? undefined
+  : Group<Snowflake, SnakeToCamelCaseNested<rawCacheMessageData>>;
+  marked: boolean;
+}
+
+export interface rawCacheMessageData extends MESSAGE_CREATE {
+  marked: boolean;
+}
+
+export interface rawCacheGuildData extends Omit<GUILD_CREATE, "channels" | "threads" | "members"> {
+  channels: Group<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
+  threads: Group<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
+  members: Group<Snowflake, SnakeToCamelCaseNested<rawMemberData>>;
+  marked: boolean;
+}
+
+export interface groupOptions {
+  limit: null | number;
+  sweepType: "timedSweep" | "noSweep" | "priority" | "auto";
 }

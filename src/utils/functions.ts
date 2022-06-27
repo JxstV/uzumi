@@ -43,19 +43,23 @@ export function ConvertObjectToSnakeCase(object: Record<string, unknown>) {
 
 // deno-lint-ignore no-explicit-any
 export function ConvertObjectToCamelCase(object: Record<string, any>) {
+  if(typeof object !== 'object') return object;
   // deno-lint-ignore no-explicit-any
   const res: Record<string, any> = {};
   const keys = Object.keys(object);
   for (const key of keys) {
     if (
       typeof object[key] === "object" &&
-      !Array.isArray(object[key]) &&
       object[key] !== null
     ) {
+      if(!Array.isArray(object[key])) {
       res[toCamelCase(key)] = ConvertObjectToCamelCase(
         // deno-lint-ignore no-explicit-any
         <Record<string, any>>object[key],
       );
+      } else {
+        res[toCamelCase(key)] = object[key].map(ConvertObjectToCamelCase);
+      }
     } else {
       res[toCamelCase(key)] = object[key];
     }
