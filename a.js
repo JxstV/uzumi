@@ -1,1 +1,0 @@
-console.log(Object.entries(process.memoryUsage()).map(x => `${x[0]}: ${x[1]/1024/1024}`).join("\n"))
