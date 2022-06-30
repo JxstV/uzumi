@@ -57,6 +57,6 @@ export class Role {
         return `<@&${this.id}>`
     }
     get byteSize() {
-        return sizeOf(this);
+        return sizeOf(this.rawData);
     }
 }

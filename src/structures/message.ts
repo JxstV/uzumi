@@ -89,6 +89,6 @@ export class Message {
         }
     }
     get byteSize() {
-        return sizeOf(this);
+        return sizeOf(this.rawData);
     }
 }

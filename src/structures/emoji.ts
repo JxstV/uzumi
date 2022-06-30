@@ -48,6 +48,6 @@ guildId: string;
         return this.id ? `${this.name}:${this.id}` : null;
     }
     get byteSize() {
-        return sizeOf(this);
+        return sizeOf(this.rawData);
     }
 }

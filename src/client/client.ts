@@ -2,6 +2,7 @@ import {
   IdentifyData,
   rawCacheUserData,
   rawChannelData,
+  rawGuildData,
   rawMessageData,
   rawUserData,
   requestData,
@@ -14,7 +15,7 @@ import { StartUp } from "../websocket/StartUp.ts";
 import { EventManager, GUILD_CREATE, READY } from "../typings/eventInterfaces.ts";
 import { api } from "../utils/constants.ts";
 import { requestApi } from "../api/request.ts";
-import { ConvertObjectToSnakeCase } from "../utils/functions.ts";
+import { ConvertObjectToSnakeCase, sizeOf } from "../utils/functions.ts";
 import { Group } from "../group/index.ts";
 import { sweepMessages } from "../sweepers/messageSweeper.ts";
 import { User } from "../structures/user.ts";
@@ -243,5 +244,23 @@ export class Client<rawData extends (boolean) = false> {
       params: ConvertObjectToSnakeCase(msgData),
     };
     return requestApi(data, this);
+  }
+
+  // Guilds
+  async getGuild(guildId:rawData extends true ? snowflake : Snowflake,fetch = false) {
+    let res : rawData extends true ? rawGuildData : Guild;
+    if(this.cache?.guilds && !fetch) {
+      //@ts
+      return this.cache.guilds.get(guildId);
+    } else {
+      const reqData:requestData = {
+        method: 'GET',
+        url: api(`guilds/${guildId}`),
+        route: `guilds/${guildId}`,
+      }
+      const data = await requestApi(reqData,this);
+      res = this.rawData ? data : new Guild(data,this);
+      return res;
+    }
   }
 }

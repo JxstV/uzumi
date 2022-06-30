@@ -254,6 +254,6 @@ presences: Group<bigint,{ user: User; guildId: string; status: "online"|"offline
         }
     }
     get byteSize() {
-        return sizeOf(this);
+        return sizeOf(this.rawData);
     }
 }

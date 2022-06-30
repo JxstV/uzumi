@@ -82,6 +82,11 @@ userId: bigint;
     //     }
     // }
     get byteSize() {
-        return sizeOf(this);
+        return sizeOf(this.rawData);
     }
+    // async getPerms() {
+    //     for(const r of this.roles) {
+    //         const guild = await this.#client.getGuild(this.guildId);
+    //     }
+    // }
 }
