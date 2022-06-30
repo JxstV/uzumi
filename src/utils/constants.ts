@@ -1,8 +1,11 @@
 import pack from "../package.json";
 export const userAgent =
-  `DiscordBot (${pack.homepage}, ${pack.version})` as const;
+  `DiscordBot (${ pack.homepage }, ${ pack.version })` as const;
 
-export const api = (link: string) => `https://discord.com/api/v10/${link}`;
+
+export const api = ( link: string ) => `https://discord.com/api/v10/${ link }`;
+export const imageUrl = ( ...data: unknown[] ) => `https://cdn.discordapp.com/${ data.join( "/" ) }`;
+
 
 export const Permissions = {
   CreateInstantInvite: 1 << 0,
@@ -47,3 +50,5 @@ export const Permissions = {
   UseEmbeddedActivities: 1n << 39n,
   ModerateMembers: 1n << 40n,
 };
+
+export const PermOverWritesType = [ 'Role', 'Member' ] as const;

@@ -5,10 +5,10 @@ import { requestData, requestOption, RoutedData } from "../typings/interface";
 import { userAgent } from "../utils/constants";
 import { ConvertObjectToSnakeCase } from "../utils/functions";
 
-export async function nonRouteRequest(
+export async function nonRouteRequest<T extends boolean>(
   data: requestData,
   options: requestOption,
-  client: Client,
+  client: Client<T>,
 ) {
   const reqData = await request(data.url, options);
 
@@ -46,7 +46,7 @@ export async function nonRouteRequest(
   }
   return reqData;
 }
-export async function requestApi(data: requestData, client: Client) {
+export async function requestApi<T extends boolean>(data: requestData, client: Client<T>) {
   const d = client.apiQueue.get(data.route);
   let getData;
   let globalRoute = client.apiQueue.get("global");

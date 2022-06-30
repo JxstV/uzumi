@@ -1,0 +1,1652 @@
+/// <reference types="node" />
+import { IdentifyData, rawCacheUserData, rawChannelData, rawMessageData, rawUserData, RoutedData } from "./../typings/interface";
+import { SnakeToCamelCaseNested, snowflake, Snowflake } from "./../typings/types";
+import { ClientOptions } from "../typings/interface";
+import { StartUp } from "../websocket/startUp";
+import { EventManager, GUILD_CREATE, READY } from "../typings/eventInterfaces";
+import { Group } from "../group/index";
+import { User } from "../structures/user";
+import { Guild } from "../structures/guild";
+import { Channel } from "../structures/channel";
+export declare class Client<rawData extends (boolean) = false> {
+    #private;
+    options: ClientOptions;
+    readyData: SnakeToCamelCaseNested<READY>;
+    apiQueue: Map<string, RoutedData>;
+    startUp: StartUp<rawData>;
+    cache?: {
+        guilds?: Group<rawData extends true ? snowflake : Snowflake, rawData extends true ? GUILD_CREATE : Guild>;
+        channels?: Group<rawData extends true ? snowflake : Snowflake, rawData extends true ? rawChannelData : Channel>;
+        users?: Group<rawData extends true ? snowflake : Snowflake, rawData extends true ? rawUserData : User>;
+    };
+    sweepers: NodeJS.Timer[];
+    rawData: boolean | void;
+    constructor(clientOptions: ClientOptions, rawData?: rawData);
+    get __on__(): Record<string, Function | Function[]>;
+    on<K extends keyof EventManager<rawData>>(event: K, func: EventManager<rawData>[K]): void;
+    get identifyData(): IdentifyData;
+    start(): void;
+    get uptime(): number;
+    get ping(): number;
+    get token(): string;
+    get user(): {
+        id: string;
+        username: string;
+        discriminator: string;
+        avatar: string | null;
+        bot?: boolean | undefined;
+        system?: boolean | undefined;
+        mfaEnabled?: boolean | undefined;
+        banner?: string | null | undefined;
+        accentColor?: number | null | undefined;
+        locale?: string | undefined;
+        verified?: boolean | undefined;
+        email?: string | null | undefined;
+        flags?: number | undefined;
+        premiumType?: number | undefined;
+        publicFlags?: number | undefined;
+    };
+    get cacheOptions(): {
+        guilds: import("./../typings/interface").CacheOption<bigint, {
+            id: string;
+            name: string;
+            icon: string | null;
+            iconHash?: string | null | undefined;
+            splash: string | null;
+            discoverySplash: string | null;
+            owner?: boolean | undefined;
+            ownerId: string;
+            permissions?: string | undefined;
+            afkChannelId: string | null;
+            afkTimeout: number;
+            widgetEnabled?: boolean | undefined;
+            widgetChannelId?: string | null | undefined;
+            verificationLevel: number;
+            defaultMessageNotifications: number;
+            explicitContentFilter: number;
+            roles: {
+                id: string;
+                name: string;
+                color: number;
+                hoist: boolean;
+                icon?: string | null | undefined;
+                unicodeEmoji?: string | null | undefined;
+                position: number;
+                permissions: string;
+                managed: boolean;
+                mentionable: boolean;
+                tags?: {
+                    botId: string;
+                    integrationId: string;
+                    premiumSubscriber?: boolean | null | undefined;
+                } | undefined;
+            }[];
+            emojis: {
+                id: string | null;
+                name: string | null;
+                roles?: string[] | undefined;
+                user?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                } | undefined;
+                requireColons?: boolean | undefined;
+                managed?: boolean | undefined;
+                animated?: boolean | undefined;
+                available?: boolean | undefined;
+            }[];
+            features: string[];
+            mfaLevel: number;
+            applicationId: string | null;
+            systemChannelId: string | null;
+            systemChannelFlags: number;
+            rulesChannelId: string | null;
+            maxPresences?: number | null | undefined;
+            maxMembers?: number | undefined;
+            vanityUrlCode: string | null;
+            description: string | null;
+            banner: string | null;
+            premiumTier: number;
+            premiumSubscriptionCount?: number | undefined;
+            preferredLocale: string;
+            publicUpdatesChannelId: string | null;
+            maxVideoChannelUsers?: number | undefined;
+            approximateMemberCount?: number | undefined;
+            approximatePresenceCount?: number | undefined;
+            welcomeScreen?: {
+                description: string | null;
+                welcomeChannels: {
+                    channelId: string;
+                    description: string;
+                    emojiId: string | null;
+                    emojiName: string | null;
+                }[];
+            } | undefined;
+            nsfwLevel: number;
+            stickers?: {
+                id: string;
+                packId?: string | undefined;
+                name: string;
+                description: string | null;
+                tags: string;
+                asset: string;
+                type: number;
+                formatType: number;
+                available?: boolean | undefined;
+                guildId?: string | undefined;
+                user?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                } | undefined;
+                sortValue?: number | undefined;
+            }[] | undefined;
+            premiumProgressBarEnabled: boolean;
+        } | Guild> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                id: string;
+                name: string;
+                icon: string | null;
+                iconHash?: string | null | undefined;
+                splash: string | null;
+                discoverySplash: string | null;
+                owner?: boolean | undefined;
+                ownerId: string;
+                permissions?: string | undefined;
+                afkChannelId: string | null;
+                afkTimeout: number;
+                widgetEnabled?: boolean | undefined;
+                widgetChannelId?: string | null | undefined;
+                verificationLevel: number;
+                defaultMessageNotifications: number;
+                explicitContentFilter: number;
+                roles: {
+                    id: string;
+                    name: string;
+                    color: number;
+                    hoist: boolean;
+                    icon?: string | null | undefined;
+                    unicodeEmoji?: string | null | undefined;
+                    position: number;
+                    permissions: string;
+                    managed: boolean;
+                    mentionable: boolean;
+                    tags?: {
+                        botId: string;
+                        integrationId: string;
+                        premiumSubscriber?: boolean | null | undefined;
+                    } | undefined;
+                }[];
+                emojis: {
+                    id: string | null;
+                    name: string | null;
+                    roles?: string[] | undefined;
+                    user?: {
+                        id: string;
+                        username: string;
+                        discriminator: string;
+                        avatar: string | null;
+                        bot?: boolean | undefined;
+                        system?: boolean | undefined;
+                        mfaEnabled?: boolean | undefined;
+                        banner?: string | null | undefined;
+                        accentColor?: number | null | undefined;
+                        locale?: string | undefined;
+                        verified?: boolean | undefined;
+                        email?: string | null | undefined;
+                        flags?: number | undefined;
+                        premiumType?: number | undefined;
+                        publicFlags?: number | undefined;
+                    } | undefined;
+                    requireColons?: boolean | undefined;
+                    managed?: boolean | undefined;
+                    animated?: boolean | undefined;
+                    available?: boolean | undefined;
+                }[];
+                features: string[];
+                mfaLevel: number;
+                applicationId: string | null;
+                systemChannelId: string | null;
+                systemChannelFlags: number;
+                rulesChannelId: string | null;
+                maxPresences?: number | null | undefined;
+                maxMembers?: number | undefined;
+                vanityUrlCode: string | null;
+                description: string | null;
+                banner: string | null;
+                premiumTier: number;
+                premiumSubscriptionCount?: number | undefined;
+                preferredLocale: string;
+                publicUpdatesChannelId: string | null;
+                maxVideoChannelUsers?: number | undefined;
+                approximateMemberCount?: number | undefined;
+                approximatePresenceCount?: number | undefined;
+                welcomeScreen?: {
+                    description: string | null;
+                    welcomeChannels: {
+                        channelId: string;
+                        description: string;
+                        emojiId: string | null;
+                        emojiName: string | null;
+                    }[];
+                } | undefined;
+                nsfwLevel: number;
+                stickers?: {
+                    id: string;
+                    packId?: string | undefined;
+                    name: string;
+                    description: string | null;
+                    tags: string;
+                    asset: string;
+                    type: number;
+                    formatType: number;
+                    available?: boolean | undefined;
+                    guildId?: string | undefined;
+                    user?: {
+                        id: string;
+                        username: string;
+                        discriminator: string;
+                        avatar: string | null;
+                        bot?: boolean | undefined;
+                        system?: boolean | undefined;
+                        mfaEnabled?: boolean | undefined;
+                        banner?: string | null | undefined;
+                        accentColor?: number | null | undefined;
+                        locale?: string | undefined;
+                        verified?: boolean | undefined;
+                        email?: string | null | undefined;
+                        flags?: number | undefined;
+                        premiumType?: number | undefined;
+                        publicFlags?: number | undefined;
+                    } | undefined;
+                    sortValue?: number | undefined;
+                }[] | undefined;
+                premiumProgressBarEnabled: boolean;
+            } | Guild) => true;
+            sweepFunc: undefined;
+        };
+        channels: import("./../typings/interface").CacheOption<bigint, Channel | {
+            id: string;
+            type: number;
+            guildId?: string | undefined;
+            position?: number | undefined;
+            permissionOverwrites?: {
+                id: string;
+                type: 0 | 1;
+                allow: string;
+                deny: string;
+            }[] | undefined;
+            name?: string | null | undefined;
+            topic?: string | null | undefined;
+            nsfw?: boolean | undefined;
+            lastMessageId?: string | null | undefined;
+            bitrate?: number | undefined;
+            userLimit?: number | undefined;
+            rateLimitPerUser?: number | undefined;
+            recipients?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            }[] | undefined;
+            icon?: string | null | undefined;
+            ownerId?: string | undefined;
+            applicationId?: string | undefined;
+            parentId?: string | null | undefined;
+            lastPinTimestamp?: string | null | undefined;
+            rtcRegion?: string | null | undefined;
+            videoQualityMode?: number | undefined;
+            messageCount?: number | undefined;
+            memberCount?: number | undefined;
+            threadMetadata?: {
+                archived: boolean;
+                autoArchiveDuration: number;
+                archiveTimestamp: string;
+                locked: boolean;
+                invitable?: boolean | undefined;
+                createTimestamp?: string | null | undefined;
+            } | undefined;
+            member?: {
+                id?: string | undefined;
+                userId?: string | undefined;
+                joinTimestamp: string;
+                flags: number;
+            } | undefined;
+            defaultAutoArchiveDuration?: number | undefined;
+            permissions?: string | undefined;
+            flags?: number | undefined;
+        }> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: Channel | {
+                id: string;
+                type: number;
+                guildId?: string | undefined;
+                position?: number | undefined;
+                permissionOverwrites?: {
+                    id: string;
+                    type: 0 | 1;
+                    allow: string;
+                    deny: string;
+                }[] | undefined;
+                name?: string | null | undefined;
+                topic?: string | null | undefined;
+                nsfw?: boolean | undefined;
+                lastMessageId?: string | null | undefined;
+                bitrate?: number | undefined;
+                userLimit?: number | undefined;
+                rateLimitPerUser?: number | undefined;
+                recipients?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                }[] | undefined;
+                icon?: string | null | undefined;
+                ownerId?: string | undefined;
+                applicationId?: string | undefined;
+                parentId?: string | null | undefined;
+                lastPinTimestamp?: string | null | undefined;
+                rtcRegion?: string | null | undefined;
+                videoQualityMode?: number | undefined;
+                messageCount?: number | undefined;
+                memberCount?: number | undefined;
+                threadMetadata?: {
+                    archived: boolean;
+                    autoArchiveDuration: number;
+                    archiveTimestamp: string;
+                    locked: boolean;
+                    invitable?: boolean | undefined;
+                    createTimestamp?: string | null | undefined;
+                } | undefined;
+                member?: {
+                    id?: string | undefined;
+                    userId?: string | undefined;
+                    joinTimestamp: string;
+                    flags: number;
+                } | undefined;
+                defaultAutoArchiveDuration?: number | undefined;
+                permissions?: string | undefined;
+                flags?: number | undefined;
+            }) => true;
+            sweepFunc: undefined;
+        };
+        users: import("./../typings/interface").CacheOption<bigint, User | {
+            id: string;
+            username: string;
+            discriminator: string;
+            avatar: string | null;
+            bot?: boolean | undefined;
+            system?: boolean | undefined;
+            mfaEnabled?: boolean | undefined;
+            banner?: string | null | undefined;
+            accentColor?: number | null | undefined;
+            locale?: string | undefined;
+            verified?: boolean | undefined;
+            email?: string | null | undefined;
+            flags?: number | undefined;
+            premiumType?: number | undefined;
+            publicFlags?: number | undefined;
+        }> | {
+            limit: null;
+            sweepType: "priority";
+            sweepFunc: (val: rawCacheUserData, _key: Snowflake, _msgMap: Group<Snowflake, rawCacheUserData>) => boolean;
+            cacheFunc: (_val: User | {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            }) => true;
+        };
+        messages: import("./../typings/interface").CacheOption<bigint, import("../structures").Message | {
+            id: string;
+            channelId: string;
+            author: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            };
+            content: string;
+            timestamp: string;
+            editedTimestamp: string | null;
+            tts: boolean;
+            mentionEveryone: boolean;
+            mentions?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            }[] | undefined;
+            mentionRoles?: {
+                id: string;
+                name: string;
+                color: number;
+                hoist: boolean;
+                icon?: string | null | undefined;
+                unicodeEmoji?: string | null | undefined;
+                position: number;
+                permissions: string;
+                managed: boolean;
+                mentionable: boolean;
+                tags?: {
+                    botId: string;
+                    integrationId: string;
+                    premiumSubscriber?: boolean | null | undefined;
+                } | undefined;
+            }[] | undefined;
+            mentionChannels?: {
+                id: string;
+                guildId: string;
+                type: number;
+                name: string;
+            }[] | undefined;
+            attachments: {
+                id: string;
+                filename: string;
+                description?: string | undefined;
+                contentType?: string | undefined;
+                size: number;
+                url: string;
+                proxyUrl: string;
+                height?: number | null | undefined;
+                width?: number | null | undefined;
+                ephemeral?: boolean | undefined;
+            }[];
+            embeds: {
+                title?: string | undefined;
+                type?: "link" | "video" | "image" | "rich" | "gifv" | "article" | undefined;
+                description?: string | undefined;
+                url?: string | undefined;
+                timestamp?: string | undefined;
+                color?: number | undefined;
+                footer?: {
+                    text: string;
+                    iconUrl?: string | undefined;
+                    proxyIconUrl?: string | undefined;
+                } | undefined;
+                image?: {
+                    url: string;
+                    height?: number | undefined;
+                    width?: number | undefined;
+                    proxyUrl?: string | undefined;
+                } | undefined;
+                thumbnail?: {
+                    url: string;
+                    height?: number | undefined;
+                    width?: number | undefined;
+                    proxyUrl?: string | undefined;
+                } | undefined;
+                video?: {
+                    url: string;
+                    height?: number | undefined;
+                    width?: number | undefined;
+                    proxyUrl?: string | undefined;
+                } | undefined;
+                provider?: {
+                    name?: string | undefined;
+                    url?: string | undefined;
+                } | undefined;
+                author?: {
+                    name: string;
+                    iconUrl?: string | undefined;
+                    proxyIconUrl?: string | undefined;
+                    url?: string | undefined;
+                } | undefined;
+                fields?: {
+                    name: string;
+                    value: string;
+                    inline?: boolean | undefined;
+                }[] | undefined;
+            }[];
+        }> | {
+            limit: number;
+            sweepType: "timedSweep";
+            cacheFunc: (_val: import("../structures").Message | {
+                id: string;
+                channelId: string;
+                author: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                };
+                content: string;
+                timestamp: string;
+                editedTimestamp: string | null;
+                tts: boolean;
+                mentionEveryone: boolean;
+                mentions?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                }[] | undefined;
+                mentionRoles?: {
+                    id: string;
+                    name: string;
+                    color: number;
+                    hoist: boolean;
+                    icon?: string | null | undefined;
+                    unicodeEmoji?: string | null | undefined;
+                    position: number;
+                    permissions: string;
+                    managed: boolean;
+                    mentionable: boolean;
+                    tags?: {
+                        botId: string;
+                        integrationId: string;
+                        premiumSubscriber?: boolean | null | undefined;
+                    } | undefined;
+                }[] | undefined;
+                mentionChannels?: {
+                    id: string;
+                    guildId: string;
+                    type: number;
+                    name: string;
+                }[] | undefined;
+                attachments: {
+                    id: string;
+                    filename: string;
+                    description?: string | undefined;
+                    contentType?: string | undefined;
+                    size: number;
+                    url: string;
+                    proxyUrl: string;
+                    height?: number | null | undefined;
+                    width?: number | null | undefined;
+                    ephemeral?: boolean | undefined;
+                }[];
+                embeds: {
+                    title?: string | undefined;
+                    type?: "link" | "video" | "image" | "rich" | "gifv" | "article" | undefined;
+                    description?: string | undefined;
+                    url?: string | undefined;
+                    timestamp?: string | undefined;
+                    color?: number | undefined;
+                    footer?: {
+                        text: string;
+                        iconUrl?: string | undefined;
+                        proxyIconUrl?: string | undefined;
+                    } | undefined;
+                    image?: {
+                        url: string;
+                        height?: number | undefined;
+                        width?: number | undefined;
+                        proxyUrl?: string | undefined;
+                    } | undefined;
+                    thumbnail?: {
+                        url: string;
+                        height?: number | undefined;
+                        width?: number | undefined;
+                        proxyUrl?: string | undefined;
+                    } | undefined;
+                    video?: {
+                        url: string;
+                        height?: number | undefined;
+                        width?: number | undefined;
+                        proxyUrl?: string | undefined;
+                    } | undefined;
+                    provider?: {
+                        name?: string | undefined;
+                        url?: string | undefined;
+                    } | undefined;
+                    author?: {
+                        name: string;
+                        iconUrl?: string | undefined;
+                        proxyIconUrl?: string | undefined;
+                        url?: string | undefined;
+                    } | undefined;
+                    fields?: {
+                        name: string;
+                        value: string;
+                        inline?: boolean | undefined;
+                    }[] | undefined;
+                }[];
+            }) => true;
+            sweepFunc: undefined;
+        };
+        threads: import("./../typings/interface").CacheOption<bigint, Channel | {
+            id: string;
+            type: number;
+            guildId?: string | undefined;
+            position?: number | undefined;
+            permissionOverwrites?: {
+                id: string;
+                type: 0 | 1;
+                allow: string;
+                deny: string;
+            }[] | undefined;
+            name?: string | null | undefined;
+            topic?: string | null | undefined;
+            nsfw?: boolean | undefined;
+            lastMessageId?: string | null | undefined;
+            bitrate?: number | undefined;
+            userLimit?: number | undefined;
+            rateLimitPerUser?: number | undefined;
+            recipients?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            }[] | undefined;
+            icon?: string | null | undefined;
+            ownerId?: string | undefined;
+            applicationId?: string | undefined;
+            parentId?: string | null | undefined;
+            lastPinTimestamp?: string | null | undefined;
+            rtcRegion?: string | null | undefined;
+            videoQualityMode?: number | undefined;
+            messageCount?: number | undefined;
+            memberCount?: number | undefined;
+            threadMetadata?: {
+                archived: boolean;
+                autoArchiveDuration: number;
+                archiveTimestamp: string;
+                locked: boolean;
+                invitable?: boolean | undefined;
+                createTimestamp?: string | null | undefined;
+            } | undefined;
+            member?: {
+                id?: string | undefined;
+                userId?: string | undefined;
+                joinTimestamp: string;
+                flags: number;
+            } | undefined;
+            defaultAutoArchiveDuration?: number | undefined;
+            permissions?: string | undefined;
+            flags?: number | undefined;
+        }> | {
+            limit: number;
+            sweepType: "priority";
+            cacheFunc: (_val: Channel | {
+                id: string;
+                type: number;
+                guildId?: string | undefined;
+                position?: number | undefined;
+                permissionOverwrites?: {
+                    id: string;
+                    type: 0 | 1;
+                    allow: string;
+                    deny: string;
+                }[] | undefined;
+                name?: string | null | undefined;
+                topic?: string | null | undefined;
+                nsfw?: boolean | undefined;
+                lastMessageId?: string | null | undefined;
+                bitrate?: number | undefined;
+                userLimit?: number | undefined;
+                rateLimitPerUser?: number | undefined;
+                recipients?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                }[] | undefined;
+                icon?: string | null | undefined;
+                ownerId?: string | undefined;
+                applicationId?: string | undefined;
+                parentId?: string | null | undefined;
+                lastPinTimestamp?: string | null | undefined;
+                rtcRegion?: string | null | undefined;
+                videoQualityMode?: number | undefined;
+                messageCount?: number | undefined;
+                memberCount?: number | undefined;
+                threadMetadata?: {
+                    archived: boolean;
+                    autoArchiveDuration: number;
+                    archiveTimestamp: string;
+                    locked: boolean;
+                    invitable?: boolean | undefined;
+                    createTimestamp?: string | null | undefined;
+                } | undefined;
+                member?: {
+                    id?: string | undefined;
+                    userId?: string | undefined;
+                    joinTimestamp: string;
+                    flags: number;
+                } | undefined;
+                defaultAutoArchiveDuration?: number | undefined;
+                permissions?: string | undefined;
+                flags?: number | undefined;
+            }) => true;
+            sweepFunc: undefined;
+        };
+        emojis: import("./../typings/interface").CacheOption<bigint, {
+            id: string | null;
+            name: string | null;
+            roles?: string[] | undefined;
+            user?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            } | undefined;
+            requireColons?: boolean | undefined;
+            managed?: boolean | undefined;
+            animated?: boolean | undefined;
+            available?: boolean | undefined;
+        } | import("../structures").Emoji> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                id: string | null;
+                name: string | null;
+                roles?: string[] | undefined;
+                user?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                } | undefined;
+                requireColons?: boolean | undefined;
+                managed?: boolean | undefined;
+                animated?: boolean | undefined;
+                available?: boolean | undefined;
+            } | import("../structures").Emoji) => true;
+            sweepFunc: undefined;
+        };
+        guildChannels: import("./../typings/interface").CacheOption<bigint, Channel | {
+            id: string;
+            type: number;
+            guildId?: string | undefined;
+            position?: number | undefined;
+            permissionOverwrites?: {
+                id: string;
+                type: 0 | 1;
+                allow: string;
+                deny: string;
+            }[] | undefined;
+            name?: string | null | undefined;
+            topic?: string | null | undefined;
+            nsfw?: boolean | undefined;
+            lastMessageId?: string | null | undefined;
+            bitrate?: number | undefined;
+            userLimit?: number | undefined;
+            rateLimitPerUser?: number | undefined;
+            recipients?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            }[] | undefined;
+            icon?: string | null | undefined;
+            ownerId?: string | undefined;
+            applicationId?: string | undefined;
+            parentId?: string | null | undefined;
+            lastPinTimestamp?: string | null | undefined;
+            rtcRegion?: string | null | undefined;
+            videoQualityMode?: number | undefined;
+            messageCount?: number | undefined;
+            memberCount?: number | undefined;
+            threadMetadata?: {
+                archived: boolean;
+                autoArchiveDuration: number;
+                archiveTimestamp: string;
+                locked: boolean;
+                invitable?: boolean | undefined;
+                createTimestamp?: string | null | undefined;
+            } | undefined;
+            member?: {
+                id?: string | undefined;
+                userId?: string | undefined;
+                joinTimestamp: string;
+                flags: number;
+            } | undefined;
+            defaultAutoArchiveDuration?: number | undefined;
+            permissions?: string | undefined;
+            flags?: number | undefined;
+        }> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: Channel | {
+                id: string;
+                type: number;
+                guildId?: string | undefined;
+                position?: number | undefined;
+                permissionOverwrites?: {
+                    id: string;
+                    type: 0 | 1;
+                    allow: string;
+                    deny: string;
+                }[] | undefined;
+                name?: string | null | undefined;
+                topic?: string | null | undefined;
+                nsfw?: boolean | undefined;
+                lastMessageId?: string | null | undefined;
+                bitrate?: number | undefined;
+                userLimit?: number | undefined;
+                rateLimitPerUser?: number | undefined;
+                recipients?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                }[] | undefined;
+                icon?: string | null | undefined;
+                ownerId?: string | undefined;
+                applicationId?: string | undefined;
+                parentId?: string | null | undefined;
+                lastPinTimestamp?: string | null | undefined;
+                rtcRegion?: string | null | undefined;
+                videoQualityMode?: number | undefined;
+                messageCount?: number | undefined;
+                memberCount?: number | undefined;
+                threadMetadata?: {
+                    archived: boolean;
+                    autoArchiveDuration: number;
+                    archiveTimestamp: string;
+                    locked: boolean;
+                    invitable?: boolean | undefined;
+                    createTimestamp?: string | null | undefined;
+                } | undefined;
+                member?: {
+                    id?: string | undefined;
+                    userId?: string | undefined;
+                    joinTimestamp: string;
+                    flags: number;
+                } | undefined;
+                defaultAutoArchiveDuration?: number | undefined;
+                permissions?: string | undefined;
+                flags?: number | undefined;
+            }) => true;
+            sweepFunc: undefined;
+        };
+        roles: import("./../typings/interface").CacheOption<bigint, {
+            id: string;
+            name: string;
+            color: number;
+            hoist: boolean;
+            icon?: string | null | undefined;
+            unicodeEmoji?: string | null | undefined;
+            position: number;
+            permissions: string;
+            managed: boolean;
+            mentionable: boolean;
+            tags?: {
+                botId: string;
+                integrationId: string;
+                premiumSubscriber?: boolean | null | undefined;
+            } | undefined;
+        } | import("../structures").Role> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                id: string;
+                name: string;
+                color: number;
+                hoist: boolean;
+                icon?: string | null | undefined;
+                unicodeEmoji?: string | null | undefined;
+                position: number;
+                permissions: string;
+                managed: boolean;
+                mentionable: boolean;
+                tags?: {
+                    botId: string;
+                    integrationId: string;
+                    premiumSubscriber?: boolean | null | undefined;
+                } | undefined;
+            } | import("../structures").Role) => true;
+            sweepFunc: undefined;
+        };
+        guildPresences: import("./../typings/interface").CacheOption<bigint, {
+            user: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            };
+            guildId: string;
+            status: "online" | "offline" | "idle" | "dnd";
+            activities: {
+                name: string;
+                type: number;
+                url?: string | null | undefined;
+                createdAt: number;
+                timestamps?: {
+                    start?: number | undefined;
+                    end?: number | undefined;
+                } | undefined;
+                applicationId?: string | undefined;
+                details?: string | null | undefined;
+                state?: string | null | undefined;
+                emoji?: {
+                    id: string | null;
+                    name: string | null;
+                    roles?: string[] | undefined;
+                    user?: {
+                        id: string;
+                        username: string;
+                        discriminator: string;
+                        avatar: string | null;
+                        bot?: boolean | undefined;
+                        system?: boolean | undefined;
+                        mfaEnabled?: boolean | undefined;
+                        banner?: string | null | undefined;
+                        accentColor?: number | null | undefined;
+                        locale?: string | undefined;
+                        verified?: boolean | undefined;
+                        email?: string | null | undefined;
+                        flags?: number | undefined;
+                        premiumType?: number | undefined;
+                        publicFlags?: number | undefined;
+                    } | undefined;
+                    requireColons?: boolean | undefined;
+                    managed?: boolean | undefined;
+                    animated?: boolean | undefined;
+                    available?: boolean | undefined;
+                } | undefined;
+                party?: {
+                    id?: string | undefined;
+                    size?: [current_size: number, max_size: number] | undefined;
+                } | undefined;
+                assets?: {
+                    largeImage?: string | undefined;
+                    largeText?: string | undefined;
+                    smallImage?: string | undefined;
+                    smallText?: string | undefined;
+                } | undefined;
+                secrets?: {
+                    join?: string | undefined;
+                    spectate?: string | undefined;
+                    match?: string | undefined;
+                } | undefined;
+                instance?: boolean | undefined;
+                flags?: number | undefined;
+                buttons?: {
+                    label: string;
+                    url: string;
+                }[] | undefined;
+            }[];
+            clientStatus: {
+                desktop?: string | undefined;
+                mobile?: string | undefined;
+                web?: string | undefined;
+            };
+        }[]> | {
+            limit: null;
+            cacheFunc: (_val: {
+                user: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                };
+                guildId: string;
+                status: "online" | "offline" | "idle" | "dnd";
+                activities: {
+                    name: string;
+                    type: number;
+                    url?: string | null | undefined;
+                    createdAt: number;
+                    timestamps?: {
+                        start?: number | undefined;
+                        end?: number | undefined;
+                    } | undefined;
+                    applicationId?: string | undefined;
+                    details?: string | null | undefined;
+                    state?: string | null | undefined;
+                    emoji?: {
+                        id: string | null;
+                        name: string | null;
+                        roles?: string[] | undefined;
+                        user?: {
+                            id: string;
+                            username: string;
+                            discriminator: string;
+                            avatar: string | null;
+                            bot?: boolean | undefined;
+                            system?: boolean | undefined;
+                            mfaEnabled?: boolean | undefined;
+                            banner?: string | null | undefined;
+                            accentColor?: number | null | undefined;
+                            locale?: string | undefined;
+                            verified?: boolean | undefined;
+                            email?: string | null | undefined;
+                            flags?: number | undefined;
+                            premiumType?: number | undefined;
+                            publicFlags?: number | undefined;
+                        } | undefined;
+                        requireColons?: boolean | undefined;
+                        managed?: boolean | undefined;
+                        animated?: boolean | undefined;
+                        available?: boolean | undefined;
+                    } | undefined;
+                    party?: {
+                        id?: string | undefined;
+                        size?: [current_size: number, max_size: number] | undefined;
+                    } | undefined;
+                    assets?: {
+                        largeImage?: string | undefined;
+                        largeText?: string | undefined;
+                        smallImage?: string | undefined;
+                        smallText?: string | undefined;
+                    } | undefined;
+                    secrets?: {
+                        join?: string | undefined;
+                        spectate?: string | undefined;
+                        match?: string | undefined;
+                    } | undefined;
+                    instance?: boolean | undefined;
+                    flags?: number | undefined;
+                    buttons?: {
+                        label: string;
+                        url: string;
+                    }[] | undefined;
+                }[];
+                clientStatus: {
+                    desktop?: string | undefined;
+                    mobile?: string | undefined;
+                    web?: string | undefined;
+                };
+            }[]) => true;
+            sweepType: "noSweep";
+            sweepFunc: undefined;
+        };
+        members: import("./../typings/interface").CacheOption<bigint, import("../structures").Member | {
+            user?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            } | undefined;
+            nick?: string | null | undefined;
+            avatar?: string | null | undefined;
+            roles: string[];
+            joinedAt: string;
+            premiumSince?: string | null | undefined;
+            deaf: boolean;
+            mute: boolean;
+            pending?: boolean | undefined;
+            permissions?: string | undefined;
+            communicationDisabledUntil?: string | null | undefined;
+        }> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: import("../structures").Member | {
+                user?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                } | undefined;
+                nick?: string | null | undefined;
+                avatar?: string | null | undefined;
+                roles: string[];
+                joinedAt: string;
+                premiumSince?: string | null | undefined;
+                deaf: boolean;
+                mute: boolean;
+                pending?: boolean | undefined;
+                permissions?: string | undefined;
+                communicationDisabledUntil?: string | null | undefined;
+            }) => true;
+            sweepFunc: undefined;
+        };
+        guildEmojis: import("./../typings/interface").CacheOption<bigint, {
+            id: string | null;
+            name: string | null;
+            roles?: string[] | undefined;
+            user?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            } | undefined;
+            requireColons?: boolean | undefined;
+            managed?: boolean | undefined;
+            animated?: boolean | undefined;
+            available?: boolean | undefined;
+        } | import("../structures").Emoji> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                id: string | null;
+                name: string | null;
+                roles?: string[] | undefined;
+                user?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                } | undefined;
+                requireColons?: boolean | undefined;
+                managed?: boolean | undefined;
+                animated?: boolean | undefined;
+                available?: boolean | undefined;
+            } | import("../structures").Emoji) => true;
+            sweepFunc: undefined;
+        };
+        guildScheduledEvents: import("./../typings/interface").CacheOption<bigint, {
+            id: string;
+            guildId: string;
+            channelId: string | null;
+            creatorId?: string | null | undefined;
+            name: string;
+            description: string | null;
+            scheduledStartTime: string;
+            scheduledEndTime: string;
+            privacyLevel: number;
+            status: number;
+            entityType: number;
+            entityId: string | null;
+            entityMetadata: {
+                location?: string | undefined;
+            } | null;
+            creator?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            } | undefined;
+            userCount?: number | undefined;
+            image?: string | null | undefined;
+        }> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                id: string;
+                guildId: string;
+                channelId: string | null;
+                creatorId?: string | null | undefined;
+                name: string;
+                description: string | null;
+                scheduledStartTime: string;
+                scheduledEndTime: string;
+                privacyLevel: number;
+                status: number;
+                entityType: number;
+                entityId: string | null;
+                entityMetadata: {
+                    location?: string | undefined;
+                } | null;
+                creator?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                } | undefined;
+                userCount?: number | undefined;
+                image?: string | null | undefined;
+            }) => true;
+            sweepFunc: undefined;
+        };
+        emojiRoles: import("./../typings/interface").CacheOption<bigint, {
+            id: string;
+            name: string;
+            color: number;
+            hoist: boolean;
+            icon?: string | null | undefined;
+            unicodeEmoji?: string | null | undefined;
+            position: number;
+            permissions: string;
+            managed: boolean;
+            mentionable: boolean;
+            tags?: {
+                botId: string;
+                integrationId: string;
+                premiumSubscriber?: boolean | null | undefined;
+            } | undefined;
+        } | import("../structures").Role> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                id: string;
+                name: string;
+                color: number;
+                hoist: boolean;
+                icon?: string | null | undefined;
+                unicodeEmoji?: string | null | undefined;
+                position: number;
+                permissions: string;
+                managed: boolean;
+                mentionable: boolean;
+                tags?: {
+                    botId: string;
+                    integrationId: string;
+                    premiumSubscriber?: boolean | null | undefined;
+                } | undefined;
+            } | import("../structures").Role) => true;
+            sweepFunc: undefined;
+        };
+        guildStageInstances: import("./../typings/interface").CacheOption<bigint, {
+            id: string;
+            guildId: string;
+            channelId: string;
+            topic: string;
+            privacyLevel: number;
+            discoverableDisabled: boolean;
+            guildScheduledEventId: string | null;
+        }> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                id: string;
+                guildId: string;
+                channelId: string;
+                topic: string;
+                privacyLevel: number;
+                discoverableDisabled: boolean;
+                guildScheduledEventId: string | null;
+            }) => true;
+            sweepFunc: undefined;
+        };
+        guildStickers: import("./../typings/interface").CacheOption<bigint, {
+            id: string;
+            packId?: string | undefined;
+            name: string;
+            description: string | null;
+            tags: string;
+            asset: string;
+            type: number;
+            formatType: number;
+            available?: boolean | undefined;
+            guildId?: string | undefined;
+            user?: {
+                id: string;
+                username: string;
+                discriminator: string;
+                avatar: string | null;
+                bot?: boolean | undefined;
+                system?: boolean | undefined;
+                mfaEnabled?: boolean | undefined;
+                banner?: string | null | undefined;
+                accentColor?: number | null | undefined;
+                locale?: string | undefined;
+                verified?: boolean | undefined;
+                email?: string | null | undefined;
+                flags?: number | undefined;
+                premiumType?: number | undefined;
+                publicFlags?: number | undefined;
+            } | undefined;
+            sortValue?: number | undefined;
+        } | import("../structures/sticker").Sticker> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                id: string;
+                packId?: string | undefined;
+                name: string;
+                description: string | null;
+                tags: string;
+                asset: string;
+                type: number;
+                formatType: number;
+                available?: boolean | undefined;
+                guildId?: string | undefined;
+                user?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                } | undefined;
+                sortValue?: number | undefined;
+            } | import("../structures/sticker").Sticker) => true;
+            sweepFunc: undefined;
+        };
+        guildVoiceStates: import("./../typings/interface").CacheOption<bigint, {
+            guildId?: string | undefined;
+            channelId: string | null;
+            userId: string;
+            member?: {
+                user?: {
+                    id: string;
+                    username: string;
+                    discriminator: string;
+                    avatar: string | null;
+                    bot?: boolean | undefined;
+                    system?: boolean | undefined;
+                    mfaEnabled?: boolean | undefined;
+                    banner?: string | null | undefined;
+                    accentColor?: number | null | undefined;
+                    locale?: string | undefined;
+                    verified?: boolean | undefined;
+                    email?: string | null | undefined;
+                    flags?: number | undefined;
+                    premiumType?: number | undefined;
+                    publicFlags?: number | undefined;
+                } | undefined;
+                nick?: string | null | undefined;
+                avatar?: string | null | undefined;
+                roles: string[];
+                joinedAt: string;
+                premiumSince?: string | null | undefined;
+                deaf: boolean;
+                mute: boolean;
+                pending?: boolean | undefined;
+                permissions?: string | undefined;
+                communicationDisabledUntil?: string | null | undefined;
+            } | undefined;
+            sessionId: string;
+            deaf: boolean;
+            mute: boolean;
+            selfDeaf: boolean;
+            selfMute: boolean;
+            selfStream?: boolean | undefined;
+            selfVideo: boolean;
+            suppress: boolean;
+            requestToSpeakTimestamp: string | null;
+        }> | {
+            limit: null;
+            sweepType: "noSweep";
+            cacheFunc: (_val: {
+                guildId?: string | undefined;
+                channelId: string | null;
+                userId: string;
+                member?: {
+                    user?: {
+                        id: string;
+                        username: string;
+                        discriminator: string;
+                        avatar: string | null;
+                        bot?: boolean | undefined;
+                        system?: boolean | undefined;
+                        mfaEnabled?: boolean | undefined;
+                        banner?: string | null | undefined;
+                        accentColor?: number | null | undefined;
+                        locale?: string | undefined;
+                        verified?: boolean | undefined;
+                        email?: string | null | undefined;
+                        flags?: number | undefined;
+                        premiumType?: number | undefined;
+                        publicFlags?: number | undefined;
+                    } | undefined;
+                    nick?: string | null | undefined;
+                    avatar?: string | null | undefined;
+                    roles: string[];
+                    joinedAt: string;
+                    premiumSince?: string | null | undefined;
+                    deaf: boolean;
+                    mute: boolean;
+                    pending?: boolean | undefined;
+                    permissions?: string | undefined;
+                    communicationDisabledUntil?: string | null | undefined;
+                } | undefined;
+                sessionId: string;
+                deaf: boolean;
+                mute: boolean;
+                selfDeaf: boolean;
+                selfMute: boolean;
+                selfStream?: boolean | undefined;
+                selfVideo: boolean;
+                suppress: boolean;
+                requestToSpeakTimestamp: string | null;
+            }) => true;
+            sweepFunc: undefined;
+        };
+    };
+    getAuditLogs(): void;
+    sendMessage(channelId: Snowflake, msgData: {
+        content: string;
+    }): Promise<rawMessageData>;
+}
+//# sourceMappingURL=client.d.ts.map

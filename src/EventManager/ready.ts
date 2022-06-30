@@ -3,7 +3,7 @@ import { Events } from "../typings/enums";
 import { MESSAGE_CREATE, READY } from "../typings/eventInterfaces";
 import { SnakeToCamelCaseNested } from "../typings/types";
 import { cleanObject, ConvertObjectToCamelCase } from "../utils/functions";
-export default async function handle(data: READY, client: Client) {
+export default async function handle<T extends boolean>(data: READY, client: Client<T>) {
   const obj = <SnakeToCamelCaseNested<READY>>ConvertObjectToCamelCase(data);
   obj.user.system = false;
   client.readyData = <SnakeToCamelCaseNested<READY>>cleanObject(obj);

@@ -1,0 +1,22 @@
+{
+    "name": "ayaya",
+    "description": "A Library to Handle Discord Api With Ease",
+    "version": "1.0.0",
+    "author": {
+        "name": "USERSATOSHI",
+        "url": "https://github.com/usersatoshi"
+    },
+    "bugs": {
+        "url": "https://github.com/USERSATOSHI/Ayaya/issues"
+    },
+    "homepage": "https://usersatoshi.github.io/ayaya",
+    "dependencies": {
+        "undici": "^5.5.1",
+        "ws": "^8.8.0"
+    },
+    "devDependencies": {
+        "@types/ws": "^8.5.3",
+        "typedoc": "^0.22.17",
+        "typescript": "^4.7.4"
+    }
+}
