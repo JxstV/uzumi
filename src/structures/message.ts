@@ -44,7 +44,7 @@ mentions: { everyone: boolean; channels: { id: bigint; guildId: bigint; name: st
         this.embeds = data.embeds.map(x => <SnakeToCamelCaseNested<rawEmbedData>>ConvertObjectToCamelCase(x));
         this.guildId = BigInt(data.guild_id);
         this.id = BigInt(data.id);
-        this.member = new Member(data.member, data.guild_id, data.author.id, this.#client)
+        this.member = data.member ? new Member(data.member, data.guild_id, data.author.id, this.#client) : data.member;
         this.mentions = {
             everyone: data.mention_everyone,
             channels: data.mention_channels ? data.mention_channels.map(x => {
