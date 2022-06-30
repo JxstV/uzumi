@@ -207,7 +207,7 @@ export interface ClientOptions {
     stickers?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawStickerData> | Sticker>;
     guildVoiceStates?: CacheOption<Snowflake,SnakeToCamelCaseNested<rawVoiceStateData>>;
   };
-  intents: Array<keyof typeof Intents>;
+  intents: Array<keyof typeof Intents> | number | 'all';
 }
 
 export interface CacheOption<K, V> extends groupOptions {

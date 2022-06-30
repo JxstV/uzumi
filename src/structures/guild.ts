@@ -38,17 +38,17 @@ export class Guild {
     name: string;
     nsfw: number;
     owner?: boolean | undefined;
-    ownerId: string;
+    ownerId: bigint;
     permissions: { bits: bigint | null; readonly array: string[]; };
     preferredLocale: string;
     premium: { progressBarEnabled: boolean; subScriptionsCount: number; tier: number; };
 
-    publicUpdatesChannelId: string | null;
+    publicUpdatesChannelId: bigint | undefined;
     roles: Group<bigint, Role>;
-    rulesChannelId: string | null;
+    rulesChannelId: bigint | undefined;
     splash: string | null;
     stageInstances: Group<bigint, { id: bigint; channelId: bigint; guildId: bigint; guildScheduledEventId: bigint | null; topic: string; privacyLevel: number; discoverableDisabled: boolean; }>;
-    systemChannel: { id: string | null; flags: number; };
+    systemChannel: { id: bigint | null; flags: number; };
     threads: Group<bigint, Channel>;
     unavailable: boolean;
     vanityUrlCode: string | null;
@@ -132,7 +132,7 @@ presences: Group<bigint,{ user: User; guildId: string; status: "online"|"offline
         this.name = data.name;
         this.nsfw = data.nsfw_level;
         this.owner = data.owner;
-        this.ownerId = data.owner_id;
+        this.ownerId = BigInt(data.owner_id);
         this.permissions = {
             bits: data.permissions ? BigInt(data.permissions) : null,
             get array() {
@@ -157,7 +157,7 @@ presences: Group<bigint,{ user: User; guildId: string; status: "online"|"offline
                 return [d.user.id, d];
             })
         );
-        this.publicUpdatesChannelId = data.public_updates_channel_id;
+        this.publicUpdatesChannelId = data.public_updates_channel_id ? BigInt(data.public_updates_channel_id) : undefined;
         this.roles = new Group(
             client.cacheOptions.roles,
             data.roles.map(x => {
@@ -165,7 +165,7 @@ presences: Group<bigint,{ user: User; guildId: string; status: "online"|"offline
                 return [r.id, r];
             })
         )
-        this.rulesChannelId = data.rules_channel_id;
+        this.rulesChannelId = data.rules_channel_id ? BigInt(data.rules_channel_id) : undefined;
         this.splash = data.splash;
         this.stageInstances = new Group(
             client.cacheOptions.guildStageInstances,
@@ -189,7 +189,7 @@ presences: Group<bigint,{ user: User; guildId: string; status: "online"|"offline
             })
         ) : undefined;
         this.systemChannel = {
-            id: data.system_channel_id,
+            id: data.system_channel_id ? BigInt(data.system_channel_id) : null,
             flags: data.system_channel_flags,
         }
         this.threads = new Group(

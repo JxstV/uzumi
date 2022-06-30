@@ -92,11 +92,16 @@ export class Client<rawData extends (boolean) = false> {
     };
   }
   #parseIntents() {
-    let i = this.options.intents.length;
-    const intents = this.options.intents;
     let res = 0;
-    while (i-- > 0) {
-      res += Intents[intents[i]];
+    if (Array.isArray(this.options.intents)) {
+      let i = this.options.intents.length;
+      const intents = this.options.intents;
+      while (i-- > 0) {
+        res += Intents[intents[i]];
+      }
+    } else if (typeof this.options.intents === 'number') return this.options.intents;
+    else {
+      return 524287;
     }
     return res;
   }

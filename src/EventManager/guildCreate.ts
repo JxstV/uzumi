@@ -1,5 +1,6 @@
 import { Client } from "../client/client.ts";
 import { Guild } from "../structures/guild.ts";
+import { User } from "../structures/user.ts";
 import { Events } from "../typings/enums.ts";
 import { GUILD_CREATE } from "../typings/eventInterfaces.ts";
 import { rawUserData } from "../typings/interface.ts";
@@ -7,7 +8,7 @@ export default async function handle<T extends boolean>(data: GUILD_CREATE, clie
 	let ParsedData;
 	if (!client.rawData) ParsedData = new Guild(data, client);
 	else ParsedData = data;
-	if (client.cacheOptions.channels.limit) {
+	if (client.cacheOptions.channels.limit !== 0) {
 		for (const channel of ParsedData.channels) {
 			if (Array.isArray(channel) && !client.rawData) {
 				//@ts-ignore: this is always true
@@ -18,7 +19,7 @@ export default async function handle<T extends boolean>(data: GUILD_CREATE, clie
 			}
 		}
 	}
-	if (client.cacheOptions.users.limit) {
+	if (client.cacheOptions.users.limit !== 0) {
 		for (const member of data.members) {
 			if (client.rawData) {
 				//@ts-ignore: data is always raw here
@@ -29,7 +30,7 @@ export default async function handle<T extends boolean>(data: GUILD_CREATE, clie
 			}
 		}
 	}
-	if (client.cacheOptions.guilds.limit) {
+	if (client.cacheOptions.guilds.limit !== 0) {
 		//@ts-ignore: data is parsed 
 		client.cache?.guilds?.set(ParsedData.id, ParsedData)
 	}
