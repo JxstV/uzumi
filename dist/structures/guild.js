@@ -186,7 +186,7 @@ class Guild {
         }
     }
     get byteSize() {
-        return (0, functions_1.sizeOf)(this);
+        return (0, functions_1.sizeOf)(this.rawData);
     }
 }
 exports.Guild = Guild;

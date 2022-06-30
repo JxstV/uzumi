@@ -49,6 +49,6 @@ guildId: string;
     }
     get byteSize ()
     {
-        return sizeOf( this );
+        return sizeOf( this.rawData );
     }
 }

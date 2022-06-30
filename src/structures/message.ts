@@ -90,6 +90,6 @@ mentions: { everyone: boolean; channels: { id: bigint; guildId: bigint; name: st
     }
     get byteSize ()
     {
-        return sizeOf( this );
+        return sizeOf( this.rawData );
     }
 }

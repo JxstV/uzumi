@@ -58,6 +58,6 @@ export class Role {
     }
     get byteSize ()
     {
-        return sizeOf( this );
+        return sizeOf( this.rawData );
     }
 }

@@ -15,7 +15,7 @@ import { StartUp } from "../websocket/startUp";
 import { EventManager, GUILD_CREATE, READY } from "../typings/eventInterfaces";
 import { api } from "../utils/constants";
 import { requestApi } from "../api/request";
-import { ConvertObjectToSnakeCase } from "../utils/functions";
+import { ConvertObjectToSnakeCase, sizeOf } from "../utils/functions";
 import { Group } from "../group/index";
 import { sweepMessages } from "../sweepers/messageSweeper";
 import { User } from "../structures/user";

@@ -44,7 +44,7 @@ class Emoji {
         return this.id ? `${this.name}:${this.id}` : null;
     }
     get byteSize() {
-        return (0, functions_1.sizeOf)(this);
+        return (0, functions_1.sizeOf)(this.rawData);
     }
 }
 exports.Emoji = Emoji;

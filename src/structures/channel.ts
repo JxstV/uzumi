@@ -119,6 +119,6 @@ export class Channel {
     }
     get byteSize ()
     {
-        return sizeOf( this );
+        return sizeOf( this.rawData );
     }
 }

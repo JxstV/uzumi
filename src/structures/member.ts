@@ -67,7 +67,7 @@ userId: bigint;
     }
     get byteSize ()
     {
-        return sizeOf( this );
+        return sizeOf( this.rawData );
     }
     avatarUrl({ size = 4096, animated = true, format = ".webp" }: ImageOptions = {}) {
         if (!this.avatar) return null;
