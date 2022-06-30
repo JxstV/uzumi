@@ -2,7 +2,7 @@ import { Client } from "../client/client";
 import { ImageOptions, rawMemberData } from "../typings/interface";
 import { snowflake } from "../typings/types";
 import { imageUrl } from "../utils/constants";
-import { parsePermissions } from "../utils/functions";
+import { parsePermissions, sizeOf } from "../utils/functions";
 
 export class Member {
     #client: Client<boolean>;
@@ -64,6 +64,10 @@ userId: bigint;
     }
     toString() {
         return `<@${this.userId}>`
+    }
+    get byteSize ()
+    {
+        return sizeOf( this );
     }
     avatarUrl({ size = 4096, animated = true, format = ".webp" }: ImageOptions = {}) {
         if (!this.avatar) return null;

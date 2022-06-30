@@ -26,5 +26,6 @@ export declare class Role {
     constructor(data: rawRoleData, guild: snowflake, client: Client<boolean>);
     clean(): void;
     toString(): string;
+    get byteSize(): number;
 }
 //# sourceMappingURL=role.d.ts.map

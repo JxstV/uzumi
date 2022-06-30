@@ -27,5 +27,6 @@ export declare class User {
     get hexAccentColor(): string;
     avatarUrl({ size, animated, format }?: ImageOptions): string | null | undefined;
     bannerUrl({ size, animated, format }?: ImageOptions): string | null | undefined;
+    get byteSize(): number;
 }
 //# sourceMappingURL=user.d.ts.map

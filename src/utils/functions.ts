@@ -1,3 +1,5 @@
+import v8 from 'v8'
+import { Permissions } from './constants';
 export function toCamelCase ( value: string ): string
 {
   return value.replaceAll( /[-_][a-z]/g, ( $1 ) =>
@@ -118,3 +120,7 @@ export function parsePermissions ( bit: bigint | null )
   return array;
 }
 
+export function sizeOf ( data: unknown )
+{
+  return v8.serialize( data ).byteLength;
+}

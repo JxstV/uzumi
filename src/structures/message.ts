@@ -3,7 +3,7 @@ import { Group } from "../group/index";
 import { MESSAGE_CREATE } from "../typings/eventInterfaces";
 import { rawAttachmentData, rawCacheUserData, rawEmbedData } from "../typings/interface";
 import { SnakeToCamelCaseNested } from '../typings/types'
-import { ConvertObjectToCamelCase } from "../utils/functions";
+import { ConvertObjectToCamelCase, sizeOf } from "../utils/functions";
 import { Member } from "./member";
 import { User } from "./user";
 export class Message {
@@ -87,5 +87,9 @@ mentions: { everyone: boolean; channels: { id: bigint; guildId: bigint; name: st
                 //@ts-ignore:key is from this
                 delete this[key];
         }
+    }
+    get byteSize ()
+    {
+        return sizeOf( this );
     }
 }

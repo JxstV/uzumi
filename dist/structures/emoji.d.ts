@@ -18,5 +18,6 @@ export declare class Emoji {
     clean(): void;
     toString(): string | null;
     get identifier(): string | null;
+    get byteSize(): number;
 }
 //# sourceMappingURL=emoji.d.ts.map

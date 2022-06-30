@@ -13,6 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _Group_options;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Group = void 0;
+const functions_1 = require("../utils/functions");
 class Group extends Map {
     constructor(options, iterable) {
         super(iterable);
@@ -70,6 +71,9 @@ class Group extends Map {
     }
     get limit() {
         return __classPrivateFieldGet(this, _Group_options, "f").limit ?? Infinity;
+    }
+    get byteSize() {
+        return (0, functions_1.sizeOf)(this);
     }
 }
 exports.Group = Group;

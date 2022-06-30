@@ -187,5 +187,6 @@ export declare class Guild {
     }>;
     constructor(data: GUILD_CREATE, client: Client<boolean>);
     clean(): void;
+    get byteSize(): number;
 }
 //# sourceMappingURL=guild.d.ts.map

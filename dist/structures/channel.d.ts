@@ -52,5 +52,6 @@ export declare class Channel {
     constructor(data: rawChannelData, guild: snowflake, client: Client<boolean>);
     clean(): void;
     toString(): string;
+    get byteSize(): number;
 }
 //# sourceMappingURL=channel.d.ts.map

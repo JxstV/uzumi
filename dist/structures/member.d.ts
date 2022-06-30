@@ -30,6 +30,7 @@ export declare class Member {
     constructor(data: rawMemberData, guild: snowflake, user: snowflake, client: Client<boolean>);
     clean(): void;
     toString(): string;
+    get byteSize(): number;
     avatarUrl({ size, animated, format }?: ImageOptions): string | null | undefined;
 }
 //# sourceMappingURL=member.d.ts.map

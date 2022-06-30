@@ -81,6 +81,9 @@ class Message {
                 delete this[key];
         }
     }
+    get byteSize() {
+        return (0, functions_1.sizeOf)(this);
+    }
 }
 exports.Message = Message;
 _Message_client = new WeakMap();

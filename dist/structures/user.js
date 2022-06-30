@@ -9,6 +9,7 @@ var _User_client;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const constants_1 = require("../utils/constants");
+const functions_1 = require("../utils/functions");
 class User {
     constructor(data, client) {
         _User_client.set(this, void 0);
@@ -74,6 +75,9 @@ class User {
         else {
             return (0, constants_1.imageUrl)("banners", this.id, this.banner, format, "?size=", size);
         }
+    }
+    get byteSize() {
+        return (0, functions_1.sizeOf)(this);
     }
 }
 exports.User = User;

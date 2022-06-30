@@ -33,6 +33,19 @@ class Sticker {
             this.user = user ? (0, functions_1.ConvertObjectToCamelCase)(user) : undefined;
         }
         this.rawData = data;
+        this.clean();
+    }
+    clean() {
+        const keys = Object.keys(this);
+        for (const key of keys) {
+            //@ts-ignore:key is from this
+            if (this[key] === undefined)
+                //@ts-ignore:key is from this
+                delete this[key];
+        }
+    }
+    get byteSize() {
+        return (0, functions_1.sizeOf)(this);
     }
 }
 exports.Sticker = Sticker;

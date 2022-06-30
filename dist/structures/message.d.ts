@@ -104,5 +104,6 @@ export declare class Message {
     };
     constructor(data: MESSAGE_CREATE, client: Client<boolean>);
     clean(): void;
+    get byteSize(): number;
 }
 //# sourceMappingURL=message.d.ts.map

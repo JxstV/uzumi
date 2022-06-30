@@ -49,6 +49,9 @@ class Role {
     toString() {
         return `<@&${this.id}>`;
     }
+    get byteSize() {
+        return (0, functions_1.sizeOf)(this);
+    }
 }
 exports.Role = Role;
 _Role_client = new WeakMap();

@@ -1,4 +1,5 @@
 import { groupOptions } from "../typings/interface";
+import { sizeOf } from "../utils/functions";
 
 export class Group<K, V> extends Map<K, V> {
   #options: groupOptions;
@@ -58,5 +59,9 @@ export class Group<K, V> extends Map<K, V> {
   }
   get limit() {
     return this.#options.limit ?? Infinity;
+  }
+  get byteSize ()
+  {
+    return sizeOf( this );
   }
 }

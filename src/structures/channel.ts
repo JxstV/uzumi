@@ -3,7 +3,7 @@ import { Group } from "../group/index";
 import { rawChannelData } from "../typings/interface";
 import { SnakeToCamelCaseNested, snowflake } from "../typings/types";
 import { PermOverWritesType } from "../utils/constants";
-import { ConvertObjectToCamelCase, parsePermissions } from "../utils/functions";
+import { ConvertObjectToCamelCase, parsePermissions, sizeOf } from "../utils/functions";
 import { Message } from "./message";
 import { User } from "./user";
 
@@ -116,5 +116,9 @@ export class Channel {
     }
     toString() {
         return `<#${this.id}>`
+    }
+    get byteSize ()
+    {
+        return sizeOf( this );
     }
 }

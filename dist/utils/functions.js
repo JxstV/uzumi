@@ -1,6 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parsePermissions = exports.cleanObject = exports.ConvertObjectToCamelCase = exports.ConvertObjectToSnakeCase = exports.convertEventstoPascalCase = exports.toSnakeCase = exports.toCamelCase = void 0;
+exports.sizeOf = exports.parsePermissions = exports.cleanObject = exports.ConvertObjectToCamelCase = exports.ConvertObjectToSnakeCase = exports.convertEventstoPascalCase = exports.toSnakeCase = exports.toCamelCase = void 0;
+const v8_1 = __importDefault(require("v8"));
+const constants_1 = require("./constants");
 function toCamelCase(value) {
     return value.replaceAll(/[-_][a-z]/g, ($1) => {
         return $1.toUpperCase().replace("_", "").replace("-", "");
@@ -81,7 +86,7 @@ exports.cleanObject = cleanObject;
 function parsePermissions(bit) {
     if (bit === null)
         return [];
-    const keys = Object.keys(Permissions);
+    const keys = Object.keys(constants_1.Permissions);
     const binary = bit.toString(2);
     const array = [];
     let i = binary.length;
@@ -89,11 +94,15 @@ function parsePermissions(bit) {
     while (i--) {
         if (binary[u]) {
             //@ts-ignore: x is key from Permissions
-            array.push(keys.find(x => Permissions[x] === 2 ** u));
+            array.push(keys.find(x => constants_1.Permissions[x] === 2 ** u));
         }
         u++;
     }
     return array;
 }
 exports.parsePermissions = parsePermissions;
+function sizeOf(data) {
+    return v8_1.default.serialize(data).byteLength;
+}
+exports.sizeOf = sizeOf;
 //# sourceMappingURL=functions.js.map

@@ -11,5 +11,6 @@ export declare class Group<K, V> extends Map<K, V> {
     mapAsync<U>(func: (value: V, key: K, map: this) => U): U[];
     get sweepType(): "timedSweep" | "noSweep" | "priority" | "auto";
     get limit(): number;
+    get byteSize(): number;
 }
 //# sourceMappingURL=index.d.ts.map

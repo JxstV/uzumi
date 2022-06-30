@@ -1,7 +1,7 @@
 import { Client } from "../client/client";
 import { rawRoleData } from "../typings/interface";
 import { snowflake } from "../typings/types";
-import { parsePermissions } from "../utils/functions";
+import { parsePermissions, sizeOf } from "../utils/functions";
 
 export class Role {
     #client: Client<boolean>;
@@ -55,5 +55,9 @@ export class Role {
     }
     toString() {
         return `<@&${this.id}>`
+    }
+    get byteSize ()
+    {
+        return sizeOf( this );
     }
 }

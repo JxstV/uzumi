@@ -2,6 +2,7 @@ import { Client } from "../client/client";
 import { ImageOptions, rawUserData } from "../typings/interface";
 import { Snowflake } from "../typings/types";
 import { imageUrl } from "../utils/constants";
+import { sizeOf } from "../utils/functions";
 
 export class User {
     #client: Client<boolean>;
@@ -77,5 +78,9 @@ export class User {
         } else {
             return imageUrl("banners", this.id, this.banner, format, "?size=", size)
         }
+    }
+    get byteSize ()
+    {
+        return sizeOf( this );
     }
 }

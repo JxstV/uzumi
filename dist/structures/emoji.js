@@ -8,6 +8,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
 var _Emoji_client;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Emoji = void 0;
+const functions_1 = require("../utils/functions");
 const user_1 = require("./user");
 class Emoji {
     constructor(data, guild, client) {
@@ -41,6 +42,9 @@ class Emoji {
     }
     get identifier() {
         return this.id ? `${this.name}:${this.id}` : null;
+    }
+    get byteSize() {
+        return (0, functions_1.sizeOf)(this);
     }
 }
 exports.Emoji = Emoji;

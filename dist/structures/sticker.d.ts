@@ -18,5 +18,7 @@ export declare class Sticker {
     user?: User | SnakeToCamelCaseNested<rawUserData>;
     rawData: rawStickerData;
     constructor(data: rawStickerData, guildId: snowflake, client: Client<boolean>);
+    clean(): void;
+    get byteSize(): number;
 }
 //# sourceMappingURL=sticker.d.ts.map

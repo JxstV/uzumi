@@ -3,7 +3,7 @@ import { Group } from "../group/index";
 import { GUILD_CREATE } from "../typings/eventInterfaces";
 import { rawPresenceUpdateData, rawUserData, rawVoiceStateData, rawWelcomeData } from "../typings/interface";
 import { SnakeToCamelCaseNested } from "../typings/types";
-import { ConvertObjectToCamelCase, parsePermissions } from "../utils/functions";
+import { ConvertObjectToCamelCase, parsePermissions, sizeOf } from "../utils/functions";
 import { Channel } from "./channel";
 import { Emoji } from "./emoji";
 import { Member } from "./member";
@@ -271,5 +271,9 @@ export class Guild
                 delete this[ key ];
             }
         }
+    }
+    get byteSize ()
+    {
+        return sizeOf( this );
     }
 }

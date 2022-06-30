@@ -58,6 +58,9 @@ class Member {
     toString() {
         return `<@${this.userId}>`;
     }
+    get byteSize() {
+        return (0, functions_1.sizeOf)(this);
+    }
     avatarUrl({ size = 4096, animated = true, format = ".webp" } = {}) {
         if (!this.avatar)
             return null;

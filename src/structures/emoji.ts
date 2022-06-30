@@ -1,6 +1,7 @@
 import { Client } from "../client/client";
 import { rawEmojiData } from "../typings/interface";
 import { Snowflake, snowflake } from "../typings/types";
+import { sizeOf } from "../utils/functions";
 import { User } from "./user";
 
 export class Emoji {
@@ -45,5 +46,9 @@ guildId: string;
     }
     get identifier() {
         return this.id ? `${this.name}:${this.id}` : null;
+    }
+    get byteSize ()
+    {
+        return sizeOf( this );
     }
 }
