@@ -1,3 +1,4 @@
+import { Message } from "../structures/message.ts";
 import { Client } from "./../client/client.ts";
 import {
   rawApplicationData,
@@ -9,12 +10,12 @@ import {
   rawScheduledEventsData,
   rawStageInstanceData,
   rawUserData,
-rawVoiceStateData,
+  rawVoiceStateData,
 } from "./interface.ts";
 import { integer, SnakeToCamelCaseNested, snowflake } from "./types.ts";
-export interface EventManager {
+export interface EventManager<T> {
   MessageCreate(
-    data: SnakeToCamelCaseNested<MESSAGE_CREATE>,
+    data: T extends true ? MESSAGE_CREATE : Message,
     client: Client,
   ): void;
   Hello(client: Client): void;
@@ -22,6 +23,7 @@ export interface EventManager {
 }
 
 export interface MESSAGE_CREATE extends rawMessageData {
+  marked: boolean;
   guild_id: snowflake;
   member: rawMemberData;
   mentions: Array<rawUserData>;

@@ -1,4 +1,11 @@
 import { Group } from "../group/index.ts";
+import { Channel } from "../structures/channel.ts";
+import { Emoji } from "../structures/emoji.ts";
+import { Guild } from "../structures/guild.ts";
+import { Member, Role } from "../structures/index.ts";
+import { Message } from "../structures/message.ts";
+import { Sticker } from "../structures/sticker.ts";
+import { User } from "../structures/user.ts";
 import { Intents } from "./enums.ts";
 import { GUILD_CREATE, MESSAGE_CREATE } from "./eventInterfaces.ts";
 import { integer, SnakeToCamelCaseNested, Snowflake, snowflake } from "./types.ts";
@@ -51,9 +58,9 @@ export interface rawMessageData {
   edited_timestamp: string | null;
   tts: boolean;
   mention_everyone: boolean;
-  mentions: Array<rawUserData>;
-  mention_roles: Array<rawRoleData>;
-  mention_channels: Array<rawChannelMentionData>;
+  mentions?: Array<rawUserData>;
+  mention_roles?: Array<rawRoleData>;
+  mention_channels?: Array<rawChannelMentionData>;
   attachments: Array<rawAttachmentData>;
   embeds: Array<rawEmbedData>;
 }
@@ -93,7 +100,7 @@ export interface rawRoleData {
 export interface rawRoleTagData {
   bot_id: snowflake;
   integration_id: snowflake;
-  ppremium_subscriber?: boolean | null;
+  premium_subscriber?: boolean | null;
 }
 
 export interface rawChannelMentionData {
@@ -182,12 +189,23 @@ export interface ClientOptions {
     protocol: string | string[] | undefined;
   };
   cacheOption?: {
-    messages?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheMessageData>>;
-    guilds?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheGuildData>>;
-    channels?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
-    emojis?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawEmojiData>>;
-    users?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheUserData>>;
-    threads?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
+    messages?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawMessageData> | Message>;
+    guilds?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawGuildData> | Guild>;
+    channels?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawChannelData> | Channel>;
+    emojis?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawEmojiData> | Emoji>;
+    users?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawUserData> | User>;
+    threads?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawChannelData> | Channel>;
+    guildChannels?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawChannelData> | Channel>;
+    members?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawMemberData> | Member>;
+    roles?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawRoleData> | Role>;
+    guildPresences?: CacheOption<Snowflake, SnakeToCamelCaseNested<GUILD_CREATE['presences']>>;
+    guildEmojis?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawEmojiData> | Emoji>;
+    guildScheduledEvents?: CacheOption<Snowflake, SnakeToCamelCaseNested<GUILD_CREATE['guild_scheduled_events'][number]>>;
+    emojiRoles?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawRoleData> | Role>;
+    guildStageInstances?: CacheOption<Snowflake,SnakeToCamelCaseNested<GUILD_CREATE['stage_instances'][number]>>;
+    guildStickers?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawStickerData> | Sticker>;
+    stickers?: CacheOption<Snowflake, SnakeToCamelCaseNested<rawStickerData> | Sticker>;
+    guildVoiceStates?: CacheOption<Snowflake,SnakeToCamelCaseNested<rawVoiceStateData>>;
   };
   intents: Array<keyof typeof Intents>;
 }
@@ -198,8 +216,8 @@ export interface CacheOption<K, V> extends groupOptions {
     _key: K,
     _msgMap: Group<K, V>,
   ) => boolean;
-  cacheFunc:(val:V,_key:K) => boolean;
-  interval:number;
+  cacheFunc: (val: V, _key: K) => boolean;
+  interval: number;
 }
 
 export interface IdentifyOptions {
@@ -327,7 +345,7 @@ export interface rawGuildData {
 export interface rawEmojiData {
   id: snowflake | null; //	emoji id
   name: string | null; // (can be null only in reaction emoji objects)	emoji name
-  roles?: Array<rawRoleData>; // ids	roles allowed to use this emoji
+  roles?: Array<snowflake>; // ids	roles allowed to use this emoji
   user?: rawUserData; //	user that created this emoji
   require_colons?: boolean; //	whether this emoji must be wrapped in colons
   managed?: boolean; //	whether this emoji is managed
@@ -389,7 +407,7 @@ export interface rawChannelData {
   rate_limit_per_user?: integer; //	amount of seconds a user has to wait before sending another message (0-21600); bots, as well as users with the permission manage_messages or manage_channel, are unaffected
   recipients?: Array<rawUserData>; //	the recipients of the DM
   icon?: string | null; //	icon hash of the group DM
-  owner_id: snowflake; //	id of the creator of the group DM or thread
+  owner_id?: snowflake; //	id of the creator of the group DM or thread
   application_id?: snowflake; //	application id of the group DM creator if it is bot-created
   parent_id?: snowflake | null; //	for guild channels: id of the parent category for a channel (each parent category can contain up to 50 channels), for threads: id of the text channel this thread was created
   last_pin_timestamp?: string | null; //	when the last pinned message was pinned. This may be null in events such as GUILD_CREATE when a message is not pinned.
@@ -506,28 +524,32 @@ export interface rawScheduledEventsData {
 }
 
 export interface rawCacheUserData extends rawUserData {
-  guilds: Array<Snowflake>;
-  marked: boolean;
+  guilds?: Array<Snowflake>;
+  marked?: boolean;
 }
 
 export interface rawCacheChannelData extends rawChannelData {
   messages: rawChannelData["type"] extends 13 ? undefined
-  : Group<Snowflake, SnakeToCamelCaseNested<rawCacheMessageData>>;
-  marked: boolean;
+  : Group<Snowflake, SnakeToCamelCaseNested<MESSAGE_CREATE>>;
+  marked?: boolean;
 }
 
-export interface rawCacheMessageData extends MESSAGE_CREATE {
-  marked: boolean;
-}
-
-export interface rawCacheGuildData extends Omit<GUILD_CREATE, "channels" | "threads" | "members"> {
+export interface rawCacheGuildData extends Omit<GUILD_CREATE, "channels" | "threads" | "members" | "presences" | "roles"> {
   channels: Group<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
   threads: Group<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
   members: Group<Snowflake, SnakeToCamelCaseNested<rawMemberData>>;
-  marked: boolean;
+  presences: Group<Snowflake,SnakeToCamelCaseNested<GUILD_CREATE['presences'][number]>>;
+  roles: Group<Snowflake,SnakeToCamelCaseNested<rawRoleData>>;
+  marked?: boolean;
 }
 
 export interface groupOptions {
   limit: null | number;
   sweepType: "timedSweep" | "noSweep" | "priority" | "auto";
+}
+
+export interface ImageOptions {
+  size?: number;
+  animated?: boolean;
+  format?: ".webp" | ".png" | ".jpg" | ".gif";
 }

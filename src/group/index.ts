@@ -10,6 +10,13 @@ export class Group<K, V> extends Map<K, V> {
     options.limit = options.limit === null ? Infinity : options.limit;
     this.#options = options;
   }
+  setData(key:K,value:V) {
+    if(this.size === this.limit) {
+      const topKey = <K>this.topKey();
+      this.delete(topKey);
+    }
+    this.set(key,value)
+  }
   find(func: (value: V, key: K, map: this) => boolean) {
     const keys = [...this.keys()];
     let i = this.size;
@@ -51,6 +58,13 @@ export class Group<K, V> extends Map<K, V> {
     this.forEach(async (x, y) => {
       res.push(await func(x, y,this));
     });
+    return res;
+  }
+  mapGroup<U>(func: (value: V, key: K, map: this) => U) {
+    const res = new Group<K,U>(this.#options);
+    for(const [key,value] of this) {
+       res.set(key,func(value,key,this));
+    }
     return res;
   }
   get sweepType() {

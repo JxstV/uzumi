@@ -10,14 +10,27 @@ export type SnakeToCamelCase<S extends string> = S extends `${infer T}_${infer U
   : S;
 
 //deno-lint-ignore ban-types
-export type SnakeToCamelCaseNested<T> = T extends Array<object> ? {
-  [K in keyof T as SnakeToCamelCase<K & string>]: SnakeToCamelCaseNested<
-    T[K]
+export type SnakeToCamelCaseNested<T> = T extends Array<object> ? Array<{
+  [K in keyof T[number] as SnakeToCamelCase<K & string>]: SnakeToCamelCaseNested<
+    T[number][K]
   >;
-}: T extends Array<unknown> ? T : T extends Function ? T : T extends Group<any, any> ? T : T extends object
+}>: T extends Array<unknown> ? T : T extends Function ? T : T extends Group<unknown, unknown> ? T : T extends object
   ? {
     [K in keyof T as SnakeToCamelCase<K & string>]: SnakeToCamelCaseNested<
       T[K]
     >;
   }
   : T;
+
+  export type CamelToSnakeCase<S extends string> = S extends `${infer T}${Capitalize<infer U>}` ? `${T}_${Lowercase<U>}` : S;
+export type CamelToSnakeCaseNested<T> = T extends Array<object> ? Array<{
+  [K in keyof T[number]as CamelToSnakeCase<K & string>]: CamelToSnakeCaseNested<
+    T[number][K]
+  >;
+}> : T extends Array<unknown> ? T : T extends Function ? T : T extends Group<unknown, unknown> ? T : T extends object
+? {
+  [K in keyof T as CamelToSnakeCase<K & string>]: CamelToSnakeCaseNested<
+    T[K]
+  >;
+}
+: T;

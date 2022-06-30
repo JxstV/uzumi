@@ -8,10 +8,10 @@ import {
 import { userAgent } from "../utils/constants.ts";
 import { ConvertObjectToSnakeCase } from "../utils/functions.ts";
 
-export async function nonRouteRequest(
+export async function nonRouteRequest<T extends boolean>(
   data: requestData,
   options: requestOption,
-  client: Client,
+  client: Client<T>,
 ) {
   const reqData = await fetch(data.url, options);
 
@@ -49,7 +49,7 @@ export async function nonRouteRequest(
   }
   return reqData;
 }
-export async function requestApi(data: requestData, client: Client) {
+export async function requestApi<T extends boolean>(data: requestData, client: Client<T>) {
   const d = client.apiQueue.get(data.route);
   let getData;
   const globalRoute = client.apiQueue.get("global");

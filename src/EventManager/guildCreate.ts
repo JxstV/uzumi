@@ -1,96 +1,45 @@
 import { Client } from "../client/client.ts";
-import { Group } from "../group/index.ts";
+import { Guild } from "../structures/guild.ts";
 import { Events } from "../typings/enums.ts";
 import { GUILD_CREATE } from "../typings/eventInterfaces.ts";
-import {
-  rawCacheChannelData,
-  rawCacheGuildData,
-  rawCacheMessageData,
-  rawCacheUserData,
-  rawMemberData,
-  rawUserData,
-} from "../typings/interface.ts";
-import { SnakeToCamelCaseNested, Snowflake } from "../typings/types.ts";
-import { ConvertObjectToCamelCase } from "../utils/functions.ts";
-export default async function handle(data: GUILD_CREATE, client: Client) {
-  const msg = <SnakeToCamelCaseNested<rawCacheGuildData>>ConvertObjectToCamelCase(data);
-  const channelArray: [Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>][] =
-    (msg).channels.map(
-      (x: SnakeToCamelCaseNested<rawCacheChannelData>) => {
-        if (x.type !== 13) {
-          (x).messages = new Group<
-            Snowflake,
-            SnakeToCamelCaseNested<rawCacheMessageData>
-          >(client.cacheOptions.messages);
-        }
-        return [BigInt(x.id), <SnakeToCamelCaseNested<rawCacheChannelData>>x];
-      },
-    );
-
-  const threadArray: [Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>][] = (msg)
-    .threads.map((x: SnakeToCamelCaseNested<rawCacheChannelData>) => {
-      (x).messages = new Group<
-        Snowflake,
-        SnakeToCamelCaseNested<rawCacheMessageData>
-      >(client.cacheOptions.threads);
-      return [BigInt(x.id), x];
-    });
-
-  const MemberArray: [Snowflake, SnakeToCamelCaseNested<rawMemberData>][] = (msg)
-    .members.map((x) => {
-      return [BigInt((<rawUserData>x.user).id), x];
-    });
-
-  if (client.cacheOptions.guilds.limit !== 0) {
-
-    msg.channels = new Group<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>(
-      client.cacheOptions.channels,
-      channelArray,
-    );
-
-    msg.threads = new Group(
-      client.cacheOptions.threads,
-      threadArray,
-    );
-
-    msg.members = new Group(
-      client.cacheOptions.users,
-      MemberArray,
-    );
-
-    client.cache?.guilds?.set(BigInt(msg.id), <SnakeToCamelCaseNested<rawCacheGuildData>>msg);
-  }
-  if (client.cacheOptions.channels.limit !== 0) {
-    let i = 0;
-    while (i < channelArray.length) {
-      client.cache?.channels?.set(channelArray[i][0], channelArray[i][1]);
-      i++;
-    }
-  }
-  if (client.cacheOptions.users.limit !== 0) {
-    let i = 0;
-    while (i < MemberArray.length) {
-      if (client.cache?.users?.has(MemberArray[i][0])) {
-        const u = <SnakeToCamelCaseNested<rawCacheUserData>>client.cache.users.get(
-          MemberArray[i][0],
-        );
-        u?.guilds.push(BigInt(msg.id));
-        client.cache.users.set(MemberArray[i][0], u);
-      } else {
-        const user = (<rawCacheUserData>(MemberArray[i][1].user));
-        user.guilds = [BigInt(msg.id)];
-        client.cache?.users?.set(MemberArray[i][0], user);
-      }
-      i++;
-    }
-  }
-  const funcs = client.__on__[Events.GuildCreate];
-  if (!funcs) return;
-  if (Array.isArray(funcs)) {
-    for (const f of funcs) {
-      await f(msg, client);
-    }
-  } else {
-    funcs(msg, client);
-  }
+import { rawUserData } from "../typings/interface.ts";
+export default async function handle<T extends boolean>(data: GUILD_CREATE, client: Client<T>) {
+	let ParsedData;
+	if (!client.rawData) ParsedData = new Guild(data, client);
+	else ParsedData = data;
+	if (client.cacheOptions.channels.limit) {
+		for (const channel of ParsedData.channels) {
+			if (Array.isArray(channel) && !client.rawData) {
+				//@ts-ignore: this is always true
+				client.cache?.channels?.set(channel[0], channel[1]);
+			} else {
+				//@ts-ignore: this is always false
+				client.cache?.channels?.set(channel.id, channel);
+			}
+		}
+	}
+	if (client.cacheOptions.users.limit) {
+		for (const member of data.members) {
+			if (client.rawData) {
+				//@ts-ignore: data is always raw here
+				client.cache?.users?.set((<rawUserData>member.user).id, <rawUserData>member.user);
+			} else {
+				//@ts-ignore: data is always parsed here
+				client.cache?.users?.set(BigInt((<rawUserData>member.user).id), new User(<rawUserData>member.user, client));
+			}
+		}
+	}
+	if (client.cacheOptions.guilds.limit) {
+		//@ts-ignore: data is parsed 
+		client.cache?.guilds?.set(ParsedData.id, ParsedData)
+	}
+	const funcs = client.__on__[Events.GuildCreate];
+	if (!funcs) return;
+	if (Array.isArray(funcs)) {
+		for (const f of funcs) {
+			await f(ParsedData, client);
+		}
+	} else {
+		funcs(ParsedData, client);
+	}
 }

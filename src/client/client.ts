@@ -1,58 +1,64 @@
 import {
   IdentifyData,
-  rawCacheChannelData,
-  rawCacheGuildData,
   rawCacheUserData,
+  rawChannelData,
   rawMessageData,
+  rawUserData,
   requestData,
   RoutedData,
 } from "./../typings/interface.ts";
-import { SnakeToCamelCaseNested, Snowflake } from "./../typings/types.ts";
+import { SnakeToCamelCaseNested, snowflake, Snowflake } from "./../typings/types.ts";
 import { Events, Intents } from "../typings/enums.ts";
 import { ClientOptions } from "../typings/interface.ts";
 import { StartUp } from "../websocket/StartUp.ts";
-import { EventManager, READY } from "../typings/eventInterfaces.ts";
+import { EventManager, GUILD_CREATE, READY } from "../typings/eventInterfaces.ts";
 import { api } from "../utils/constants.ts";
 import { requestApi } from "../api/request.ts";
 import { ConvertObjectToSnakeCase } from "../utils/functions.ts";
 import { Group } from "../group/index.ts";
 import { sweepMessages } from "../sweepers/messageSweeper.ts";
-export class Client {
+import { User } from "../structures/user.ts";
+import { Guild } from "../structures/guild.ts";
+import { Channel } from "../structures/channel.ts";
+export class Client<rawData extends (boolean) = false> {
   options: ClientOptions;
   readyData!: SnakeToCamelCaseNested<READY>;
   // deno-lint-ignore ban-types
   #on: Record<string, Function | Function[]> = {};
   apiQueue: Map<string, RoutedData> = new Map<string, RoutedData>();
-  startUp!: StartUp;
+  startUp!: StartUp<rawData>;
   cache?: {
-    guilds?: Group<Snowflake, SnakeToCamelCaseNested<rawCacheGuildData>>;
-    channels?: Group<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>;
-    users?: Group<Snowflake, SnakeToCamelCaseNested<rawCacheUserData>>;
+    guilds?: Group<rawData extends true ? snowflake : Snowflake, rawData extends true ? GUILD_CREATE : Guild>;
+    channels?: Group<rawData extends true ? snowflake : Snowflake, rawData extends true ? rawChannelData : Channel>;
+    users?: Group<rawData extends true ? snowflake : Snowflake, rawData extends true ? rawUserData : User>;
   };
   sweepers: number[] = [];
-  constructor(clientOptions: ClientOptions) {
+  rawData: boolean | void;
+
+  constructor(clientOptions: ClientOptions, rawData?: rawData) {
+    this.rawData = rawData;
     this.options = clientOptions;
     if (this.cacheOptions.guilds.limit !== 0) {
       if (!this.cache) {
         this.cache = {}
       }
-      this.cache.guilds = new Group<Snowflake, SnakeToCamelCaseNested<rawCacheGuildData>>(this.cacheOptions.guilds);
+      this.cache.guilds = new Group(this.cacheOptions.guilds);
     }
     if (this.cacheOptions.channels.limit !== 0) {
       if (!this.cache) {
         this.cache = {}
       }
-      this.cache.channels = new Group<Snowflake, SnakeToCamelCaseNested<rawCacheChannelData>>(this.cacheOptions.channels);
+      this.cache.channels = new Group(this.cacheOptions.channels);
     }
     if (this.cacheOptions.users.limit !== 0) {
       if (!this.cache) {
         this.cache = {}
       }
-      this.cache.users = new Group<Snowflake, SnakeToCamelCaseNested<rawCacheUserData>>(this.cacheOptions.users);
+      this.cache.users = new Group(this.cacheOptions.users);
     }
     if (this.cacheOptions.messages.limit !== 0) {
       this.sweepers.push(setInterval(() => {
-        sweepMessages(this)
+        return sweepMessages(this);
       }, 3600000)
       );
     }
@@ -60,7 +66,7 @@ export class Client {
   get __on__() {
     return this.#on;
   }
-  on<K extends keyof EventManager>(event: K, func: EventManager[K]) {
+  on<K extends keyof EventManager<rawData>>(event: K, func: EventManager<rawData>[K]) {
     const val = this.#on[Events[event]];
     if (val) {
       // deno-lint-ignore ban-types
@@ -115,7 +121,7 @@ export class Client {
         limit: null,
         sweepType: "noSweep",
         cacheFunc: (_val) => true,
-        sweepFunc:undefined
+        sweepFunc: undefined
       },
       channels: this.options.cacheOption?.channels ?? {
         limit: null,
@@ -126,7 +132,7 @@ export class Client {
       users: this.options.cacheOption?.users ?? {
         limit: null,
         sweepType: "priority",
-        sweepFunc:(
+        sweepFunc: (
           val: rawCacheUserData,
           _key: Snowflake,
           _msgMap: Group<Snowflake, rawCacheUserData>,
@@ -149,6 +155,66 @@ export class Client {
         sweepFunc: undefined
       },
       emojis: this.options.cacheOption?.emojis ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      guildChannels: this.options.cacheOption?.guildChannels ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      roles: this.options.cacheOption?.roles ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      guildPresences: this.options.cacheOption?.guildPresences ?? {
+        limit: null,
+        cacheFunc: (_val) => true,
+        sweepType: 'noSweep',
+        sweepFunc: undefined,
+      },
+      members: this.options.cacheOption?.members ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      guildEmojis: this.options.cacheOption?.guildEmojis ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      guildScheduledEvents: this.options.cacheOption?.guildScheduledEvents ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      emojiRoles: this.options.cacheOption?.emojiRoles ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      guildStageInstances: this.options.cacheOption?.guildStageInstances ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      guildStickers: this.options.cacheOption?.guildStickers ?? {
+        limit: null,
+        sweepType: "noSweep",
+        cacheFunc: (_val) => true,
+        sweepFunc: undefined
+      },
+      guildVoiceStates: this.options.cacheOption?.guildVoiceStates ?? {
         limit: null,
         sweepType: "noSweep",
         cacheFunc: (_val) => true,

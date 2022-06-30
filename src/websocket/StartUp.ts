@@ -2,24 +2,24 @@ import { handle } from "../EventManager/index.ts";
 import { Client } from "../client/client.ts";
 import { Events, WsOpCode } from "../typings/enums.ts";
 import { HelloOpData, IdentifyData, WSData } from "../typings/interface.ts";
-export class StartUp {
+export class StartUp<T extends boolean> {
 	ws !: WebSocket;
 	readyTimestamp = -1;
-	__client__: Client;
+	__client__: Client<T>;
 	__s__: number | null = -1;
 	lastAckTimestamp = -1;
 	ackCompleted = true;
 	heartbeatInterval!: number;
 	__timeout__!: number;
 	ping = -1;
-	constructor(client: Client) {
+	constructor(client: Client<T>) {
 		this.__client__ = client;
 		this.createConnection();
 	}
 	createConnection(resumed = false) {
 		this.ws = new WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
 		this.ws.addEventListener("open", () => {
-			this.readyTimestamp = Date.now();
+			this.readyTimestamp = this.readyTimestamp == -1? Date.now() : this.readyTimestamp;
 			console.log("hi");
 		});
 		this.ws.addEventListener("close", (code) => {

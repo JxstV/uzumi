@@ -9,10 +9,10 @@ import { WSData } from "../typings/interface.ts";
 import MessageCreate from "./messageCreate.ts";
 import GuildCreate from "./guildCreate.ts";
 import Ready from "./ready.ts";
-export async function handle(
+export async function handle<T extends boolean>(
   event: Events,
   WSData: WSData["d"],
-  client: Client,
+  client: Client<T>,
 ) {
   switch (event) {
     case Events.MessageCreate:
