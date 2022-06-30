@@ -1,7 +1,7 @@
 import { Client } from "../client/client.ts";
 import { rawStickerData, rawUserData } from "../typings/interface.ts";
 import { SnakeToCamelCaseNested, snowflake } from "../typings/types.ts";
-import { ConvertObjectToCamelCase } from "../utils/functions.ts";
+import { ConvertObjectToCamelCase, sizeOf } from "../utils/functions.ts";
 import { User } from "./user.ts";
 
 export class Sticker {
@@ -39,5 +39,18 @@ export class Sticker {
             this.user = user ? <SnakeToCamelCaseNested<rawUserData>>ConvertObjectToCamelCase(user) : undefined;
         }
         this.rawData = data;
+        this.clean();
+    }
+    clean() {
+        const keys = Object.keys(this)
+        for (const key of keys) {
+            //@ts-ignore:key is from this
+            if (this[key] === undefined)
+                //@ts-ignore:key is from this
+                delete this[key];
+        }
+    }
+    get byteSize() {
+        return sizeOf(this);
     }
 }

@@ -1,5 +1,4 @@
 import { Permissions } from "./constants.ts";
-
 export function toCamelCase(value: string): string {
 	return value.replaceAll(/[-_][a-z]/g, ($1) => {
 		return $1.toUpperCase().replace("_", "").replace("-", "");
@@ -99,4 +98,9 @@ export function parsePermissions(bit: bigint | null) {
 		u++;
 	}
 	return array;
+}
+
+export function sizeOf(data:unknown) {
+	//@ts-ignore:core is there
+	return Deno.core.serialize(data).byteLength
 }

@@ -3,7 +3,7 @@ import { Group } from "../group/index.ts";
 import { MESSAGE_CREATE } from "../typings/eventInterfaces.ts";
 import { rawAttachmentData, rawCacheUserData, rawEmbedData } from "../typings/interface.ts";
 import { SnakeToCamelCaseNested } from '../typings/types.ts'
-import { ConvertObjectToCamelCase } from "../utils/functions.ts";
+import { ConvertObjectToCamelCase, sizeOf } from "../utils/functions.ts";
 import { Member } from "./member.ts";
 import { User } from "./user.ts";
 export class Message {
@@ -21,8 +21,8 @@ export class Message {
     tts: boolean;
     rawData: MESSAGE_CREATE
     attachments?: Group<bigint, { id: bigint; filename: string; description?: string | undefined; contentType?: string | undefined; size: number; url: string; proxyUrl: string; height?: number | null | undefined; width?: number | null | undefined; ephemeral?: boolean | undefined; }> | undefined;
-mentions: { everyone: boolean; channels: { id: bigint; guildId: bigint; name: string; type: number; }[]; roles: { id: bigint; unicodeEmoji: string|null|undefined; tags: { botId: bigint|null; integrationId: bigint|null; premiumSubscriber: boolean; }|undefined; name: string; color: number; hoist: boolean; icon?: string|null|undefined; unicode_emoji?: string|null|undefined; position: number; permissions: string; managed: boolean; mentionable: boolean; }[]; users: User[]; };
-    
+    mentions: { everyone: boolean; channels: { id: bigint; guildId: bigint; name: string; type: number; }[]; roles: { id: bigint; unicodeEmoji: string | null | undefined; tags: { botId: bigint | null; integrationId: bigint | null; premiumSubscriber: boolean; } | undefined; name: string; color: number; hoist: boolean; icon?: string | null | undefined; unicode_emoji?: string | null | undefined; position: number; permissions: string; managed: boolean; mentionable: boolean; }[]; users: User[]; };
+
     constructor(data: MESSAGE_CREATE, client: Client<boolean>) {
         this.#client = client;
         this.attachments = data.attachments.length ? new Group(
@@ -87,5 +87,8 @@ mentions: { everyone: boolean; channels: { id: bigint; guildId: bigint; name: st
                 //@ts-ignore:key is from this
                 delete this[key];
         }
+    }
+    get byteSize() {
+        return sizeOf(this);
     }
 }

@@ -1,6 +1,7 @@
 import { Client } from "../client/client.ts";
 import { rawEmojiData } from "../typings/interface.ts";
 import { Snowflake, snowflake } from "../typings/types.ts";
+import { sizeOf } from "../utils/functions.ts";
 import { User } from "./user.ts";
 
 export class Emoji {
@@ -45,5 +46,8 @@ guildId: string;
     }
     get identifier() {
         return this.id ? `${this.name}:${this.id}` : null;
+    }
+    get byteSize() {
+        return sizeOf(this);
     }
 }

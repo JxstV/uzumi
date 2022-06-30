@@ -3,7 +3,7 @@ import { Group } from "../group/index.ts";
 import { GUILD_CREATE } from "../typings/eventInterfaces.ts";
 import { rawPresenceUpdateData, rawUserData, rawVoiceStateData, rawWelcomeData } from "../typings/interface.ts";
 import { SnakeToCamelCaseNested } from "../typings/types.ts";
-import { ConvertObjectToCamelCase, parsePermissions } from "../utils/functions.ts";
+import { ConvertObjectToCamelCase, parsePermissions, sizeOf } from "../utils/functions.ts";
 import { Channel } from "./channel.ts";
 import { Emoji } from "./emoji.ts";
 import { Member } from "./member.ts";
@@ -252,5 +252,8 @@ presences: Group<bigint,{ user: User; guildId: string; status: "online"|"offline
                 delete this[key];
             }
         }
+    }
+    get byteSize() {
+        return sizeOf(this);
     }
 }

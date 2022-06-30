@@ -2,6 +2,7 @@ import { Client } from "../client/client.ts";
 import { ImageOptions, rawUserData } from "../typings/interface.ts";
 import { Snowflake } from "../typings/types.ts";
 import { imageUrl } from "../utils/constants.ts";
+import { sizeOf } from "../utils/functions.ts";
 
 export class User {
     #client: Client<boolean>;
@@ -77,5 +78,8 @@ export class User {
         } else {
             return imageUrl("banners", this.id, this.banner, format, "?size=", size)
         }
+    }
+    get byteSize() {
+        return sizeOf(this);
     }
 }

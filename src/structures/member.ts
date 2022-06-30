@@ -2,7 +2,7 @@ import { Client } from "../client/client.ts";
 import { ImageOptions, rawMemberData } from "../typings/interface.ts";
 import { snowflake } from "../typings/types.ts";
 import { imageUrl } from "../utils/constants.ts";
-import { parsePermissions } from "../utils/functions.ts";
+import { parsePermissions, sizeOf } from "../utils/functions.ts";
 
 export class Member {
     #client: Client<boolean>;
@@ -81,4 +81,7 @@ userId: bigint;
     //         return imageUrl("banners", this.id, this.banner, format, "?size=", size)
     //     }
     // }
+    get byteSize() {
+        return sizeOf(this);
+    }
 }
