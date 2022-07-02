@@ -1,12 +1,12 @@
 {
-  "name": "ayaya",
+  "name": "library",
   "description": "A Library to Handle Discord Api With Ease",
   "author": {
     "name": "USERSATOSHI",
-    "url": "https://github.com/usersatoshi"
+    "url": "https://github.com/AkaruiDevelopment/library"
   },
   "bugs": {
-    "url": "https://github.com/USERSATOSHI/Ayaya/issues"
+    "url": "https://github.com/AkaruiDevelopment/library/issues"
   },
   "homepage": "",
   "dependencies": {

@@ -1,6 +1,6 @@
 import { Client } from "../client/client";
-import { Guild } from "../structures/guild";
-import { User } from "../structures/user";
+import { Guild } from "../structures";
+import { User } from "../structures";
 import { Events } from "../typings/enums";
 import { GUILD_CREATE } from "../typings/eventInterfaces";
 import { rawUserData } from "../typings/interface";

@@ -1,6 +1,6 @@
-import { Events } from "./../typings/enums";
-import { integer } from "./../typings/types";
-import { HelloOpData, IdentifyData, WSData } from "./../typings/interface";
+import { Events } from "../typings/enums";
+import { integer } from "../typings/types";
+import { HelloOpData, IdentifyData, WSData } from "../typings/interface";
 import ws, { WebSocket } from "ws";
 import { WsOpCode } from "../typings/enums";
 import { toCamelCase } from "../utils/functions";

@@ -1,7 +1,7 @@
 import { Client } from "../client/client";
-import { Channel } from "../structures/channel";
-import { Guild } from "../structures/guild";
-import { Message } from "../structures/message";
+import { Channel } from "../structures";
+import { Guild } from "../structures";
+import { Message } from "../structures";
 import { Snowflake } from "../typings/types";
 
 export function sweepMessages<T extends boolean> (

@@ -1,6 +1,6 @@
 import { Client } from "../client/client";
-import { Channel } from "../structures/channel";
-import { Message } from "../structures/message";
+import { Channel } from "../structures";
+import { Message } from "../structures";
 import { Events } from "../typings/enums";
 import { MESSAGE_CREATE } from "../typings/eventInterfaces";
 export default async function handle<T extends boolean> ( data: MESSAGE_CREATE, client: Client<T> )

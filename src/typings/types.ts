@@ -1,5 +1,5 @@
 // deno-lint-ignore-file ban-unused-ignore no-explicit-any ban-types
-import { Group } from "../group/index";
+import { Group } from "../group";
 import { Events } from "./enums";
 export type integer = number;
 export type Snowflake = bigint;

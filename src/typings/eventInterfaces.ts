@@ -1,5 +1,5 @@
-import { Message } from "../structures/message";
-import { Client } from "./../client/client";
+import { Message } from "../structures";
+import { Client } from "../client/client";
 import
 {
   rawApplicationData,
