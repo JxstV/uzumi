@@ -21,6 +21,7 @@ import { sweepMessages } from "../sweepers/messageSweeper.ts";
 import { User } from "../structures/user.ts";
 import { Guild } from "../structures/guild.ts";
 import { Channel } from "../structures/channel.ts";
+import { Message } from "../structures/message.ts";
 export class Client<rawData extends (boolean) = false> {
   options: ClientOptions;
   readyData!: SnakeToCamelCaseNested<READY>;
@@ -229,9 +230,41 @@ export class Client<rawData extends (boolean) = false> {
     };
   }
   //Audit Logs
-  getAuditLogs() { }
   //Channels
-  sendMessage(
+  async getChannel(channelId: rawData extends true ? snowflake : Snowflake, fetch = false): Promise<(rawData extends true ? rawChannelData : Channel) | undefined> {
+    if (this.cache?.channels && !fetch) {
+      return this.cache.channels.get(channelId);
+    } else {
+      const data: requestData = {
+        method: "GET",
+        url: api(`channels/${channelId}`),
+        route: `channels/${channelId}`
+      };
+      const res = <rawChannelData>await requestApi(data, this);
+      //@ts-ignore:it's fine 🔥🔥
+      return <rawData extends true ? rawChannelData : Channel>(this.rawData ? res : new Channel(res, this.cache?.channels?.get(res.id)?.[this.rawData ? 'guild_id' : 'guildId'], this));
+    }
+  }
+  async modifyChannel(channelId: rawData extends true ? snowflake : Snowflake, data: rawData extends true ? modifyRawChannelData : modifyChannelData): Promise<rawData extends true ? rawChannelData : Channel> {
+    let reqData: requestData = {
+      method: 'PATCH',
+      route: `channels/${channelId}`,
+      auditLogReason: data.reason,
+      url: api(`channels/${channelId}`),
+    };
+    delete data.reason;
+    if (this.rawData) {
+      reqData.params = <Record<string, unknown>>data;
+    } else {
+      const parsedData = ConvertObjectToSnakeCase(<Record<string, unknown>>data);
+      parsedData.rate_limit_per_user = parsedData.slowmode;
+      delete parsedData.slowmode;
+      reqData.params = parsedData;
+    }
+    const res = await requestApi(reqData, this);
+    return this.rawData ? res : new Channel(res, res.guild_id, this);
+  }
+  async sendMessage(
     channelId: Snowflake,
     msgData: { content: string },
   ): Promise<rawMessageData> {
@@ -243,7 +276,8 @@ export class Client<rawData extends (boolean) = false> {
       method: "POST",
       params: ConvertObjectToSnakeCase(msgData),
     };
-    return requestApi(data, this);
+    const res = await requestApi(data, this);
+    return this.rawData ? res : new Message(res,this)
   }
 
   // Guilds

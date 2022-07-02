@@ -43,6 +43,12 @@ export interface READY {
 
 export interface GUILD_CREATE extends rawGuildData {
   joined_at: string; //	when this guild was joined at
+  lazy: boolean;
+  application_command_counts: {
+    '1': number;
+    '2': number;
+    '3': number;
+  };
   large: boolean; //	true if this is considered a large guild
   unavailable: boolean; //	true if this guild is unavailable due to an outage
   member_count: integer; //	total number of members in this guild
