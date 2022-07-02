@@ -9,8 +9,8 @@ import
   rawUserData,
   requestData,
   RoutedData,
-} from "./../typings/interface";
-import { integer, SnakeToCamelCaseNested, snowflake, Snowflake } from "./../typings/types";
+} from "../typings/interface";
+import { integer, SnakeToCamelCaseNested, snowflake, Snowflake } from "../typings/types";
 import { Events, Intents } from "../typings/enums";
 import { ClientOptions } from "../typings/interface";
 import { StartUp } from "../websocket/startUp";
@@ -18,11 +18,11 @@ import { EventManager, GUILD_CREATE, READY } from "../typings/eventInterfaces";
 import { api } from "../utils/constants";
 import { requestApi } from "../api/request";
 import { ConvertObjectToSnakeCase, sizeOf } from "../utils/functions";
-import { Group } from "../group/index";
-import { sweepMessages } from "../sweepers/messageSweeper";
-import { User } from "../structures/user";
-import { Guild } from "../structures/guild";
-import { Channel } from "../structures/channel";
+import { Group } from "../group";
+import { sweepMessages } from "../sweepers";
+import { User } from "../structures";
+import { Guild } from "../structures";
+import { Channel } from "../structures";
 import { Message } from "../structures";
 export class Client<rawData extends ( boolean ) = false> {
   options: ClientOptions;
@@ -170,8 +170,7 @@ export class Client<rawData extends ( boolean ) = false> {
           _msgMap: Group<Snowflake, rawCacheUserData>,
         ) =>
         {
-          if ( ( !val.bot && !val.system ) && val.marked ) return true;
-          else return false;
+          return !!((!val.bot && !val.system) && val.marked);
         },
         cacheFunc: ( _val ) => true,
       },

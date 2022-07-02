@@ -1,5 +1,5 @@
 import { Client } from "../client/client";
-import { Group } from "../group/index";
+import { Group } from "../group";
 import { GUILD_CREATE } from "../typings/eventInterfaces";
 import { rawPresenceUpdateData, rawUserData, rawVoiceStateData, rawWelcomeData } from "../typings/interface";
 import { SnakeToCamelCaseNested } from "../typings/types";

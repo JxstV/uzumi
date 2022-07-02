@@ -1,14 +1,14 @@
 
 import ws from 'ws';
 import { HttpMethod } from 'undici/types/dispatcher';
-import { Group } from "../group/index";
-import { Channel } from "../structures/channel";
-import { Emoji } from "../structures/emoji";
-import { Guild } from "../structures/guild";
-import { Member, Role } from "../structures/index";
-import { Message } from "../structures/message";
+import { Group } from "../group";
+import { Channel } from "../structures";
+import { Emoji } from "../structures";
+import { Guild } from "../structures";
+import { Member, Role } from "../structures";
+import { Message } from "../structures";
 import { Sticker } from "../structures/sticker";
-import { User } from "../structures/user";
+import { User } from "../structures";
 import { Intents } from "./enums";
 import { GUILD_CREATE, MESSAGE_CREATE } from "./eventInterfaces";
 import { integer, SnakeToCamelCaseNested, Snowflake, snowflake } from "./types";
