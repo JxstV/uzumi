@@ -1,6 +1,6 @@
 import { Client } from "../client/client";
 import { ImageOptions, rawUserData } from "../typings/interface";
-import { Snowflake } from "../typings/types";
+import { snowflake, Snowflake } from "../typings/types";
 export declare class User {
     #private;
     accentColor?: number | null | undefined;
@@ -19,7 +19,7 @@ export declare class User {
     verified?: boolean | undefined;
     marked: boolean;
     rawData: rawUserData;
-    guilds: Snowflake[];
+    guilds: (Snowflake | snowflake)[];
     constructor(data: rawUserData, client: Client<boolean>);
     clean(): void;
     toString(): string;

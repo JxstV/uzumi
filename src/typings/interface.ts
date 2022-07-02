@@ -1,5 +1,5 @@
 
-import  ws  from 'ws';
+import ws from 'ws';
 import { HttpMethod } from 'undici/types/dispatcher';
 import { Group } from "../group/index";
 import { Channel } from "../structures/channel";
@@ -600,4 +600,46 @@ export interface ImageOptions
   size?: number;
   animated?: boolean;
   format?: ".webp" | ".png" | ".jpg" | ".gif";
+}
+
+
+
+
+export interface modifyRawChannelData
+{
+  name?: string;//	1 - 100 character channel name	All;
+  type?: integer;//	the type of channel; only conversion between text and news is supported and only in guilds with the "NEWS" feature	Text, News;
+  position?: null | integer;//	the position of the channel in the left - hand listing	All;
+  topic?: null | string;//	0 - 1024 character channel topic	Text, News;
+  nsfw?: null | boolean;//	whether the channel is nsfw	Text, Voice, News;
+  rate_limit_per_user?: null | integer;//	amount of seconds a user has to wait before sending another message( 0 - 21600 ); bots, as well as users with the permission manage_messages or manage_channel, are unaffected	Text;
+  bitrate?: null | integer;//	the bitrate(in bits ) of the voice or stage channel; min 8000	Voice, Stage;
+  user_limit?: null | integer;//	the user limit of the voice channel; 0 refers to no limit, 1 to 99 refers to a user limit	Voice;
+  permission_overwrites?: Array<rawOverwriteData>;//	channel or category - specific permissions	All;
+  parent_id?: null | snowflake;//	id of the new parent category for a channel	Text, Voice, News
+  rtc_region?: null | string;//	channel voice region id, automatic when set to null	Voice, Stage;
+  video_quality_mode?: null | integer;//	the camera video quality mode of the voice channel	Voice;
+  default_auto_archive_duration?: null | integer;//	the default duration that the clients use( not the API ) for newly created threads in the channel, in minutes, to automatically archive the thread after recent activity;
+  icon?: string;//	base64 encoded icon;
+  reason?: string//
+}
+
+
+export interface modifyChannelData
+{
+  name?: string;//	1 - 100 character channel name	All;
+  type?: integer;//	the type of channel; only conversion between text and news is supported and only in guilds with the "NEWS" feature	Text, News;
+  position?: null | integer;//	the position of the channel in the left - hand listing	All;
+  topic?: null | string;//	0 - 1024 character channel topic	Text, News;
+  nsfw?: null | boolean;//	whether the channel is nsfw	Text, Voice, News;
+  slowmode?: null | integer;//	amount of seconds a user has to wait before sending another message( 0 - 21600 ); bots, as well as users with the permission manage_messages or manage_channel, are unaffected	Text;
+  bitrate?: null | integer;//	the bitrate(in bits ) of the voice or stage channel; min 8000	Voice, Stage;
+  userLimit?: null | integer;//	the user limit of the voice channel; 0 refers to no limit, 1 to 99 refers to a user limit	Voice;
+  permissionOverwrites?: Array<rawOverwriteData>;//	channel or category - specific permissions	All;
+  parentId?: null | snowflake;//	id of the new parent category for a channel	Text, Voice, News
+  rtcRegion?: null | string;//	channel voice region id, automatic when set to null	Voice, Stage;
+  videoQualityMode?: null | integer;//	the camera video quality mode of the voice channel	Voice;
+  defaultAutoArchiveDuration?: null | integer;//	the default duration that the clients use( not the API ) for newly created threads in the channel, in minutes, to automatically archive the thread after recent activity;
+  icon?: string;//	base64 encoded icon;
+  reason?: string;//
 }

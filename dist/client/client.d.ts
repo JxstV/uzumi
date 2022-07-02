@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { IdentifyData, rawCacheUserData, rawChannelData, rawMessageData, rawUserData, RoutedData } from "./../typings/interface";
+import { IdentifyData, modifyChannelData, modifyRawChannelData, rawCacheUserData, rawChannelData, rawMessageData, rawUserData, RoutedData } from "./../typings/interface";
 import { SnakeToCamelCaseNested, snowflake, Snowflake } from "./../typings/types";
 import { ClientOptions } from "../typings/interface";
 import { StartUp } from "../websocket/startUp";
@@ -8,6 +8,7 @@ import { Group } from "../group/index";
 import { User } from "../structures/user";
 import { Guild } from "../structures/guild";
 import { Channel } from "../structures/channel";
+import { Message } from "../structures";
 export declare class Client<rawData extends (boolean) = false> {
     #private;
     options: ClientOptions;
@@ -47,7 +48,7 @@ export declare class Client<rawData extends (boolean) = false> {
         publicFlags?: number | undefined;
     };
     get cacheOptions(): {
-        guilds: import("./../typings/interface").CacheOption<bigint, {
+        guilds: import("./../typings/interface").CacheOption<bigint, Guild | {
             id: string;
             name: string;
             icon: string | null;
@@ -166,10 +167,10 @@ export declare class Client<rawData extends (boolean) = false> {
                 sortValue?: number | undefined;
             }[] | undefined;
             premiumProgressBarEnabled: boolean;
-        } | Guild> | {
+        }> | {
             limit: null;
             sweepType: "noSweep";
-            cacheFunc: (_val: {
+            cacheFunc: (_val: Guild | {
                 id: string;
                 name: string;
                 icon: string | null;
@@ -288,7 +289,7 @@ export declare class Client<rawData extends (boolean) = false> {
                     sortValue?: number | undefined;
                 }[] | undefined;
                 premiumProgressBarEnabled: boolean;
-            } | Guild) => true;
+            }) => true;
             sweepFunc: undefined;
         };
         channels: import("./../typings/interface").CacheOption<bigint, Channel | {
@@ -457,7 +458,7 @@ export declare class Client<rawData extends (boolean) = false> {
                 publicFlags?: number | undefined;
             }) => true;
         };
-        messages: import("./../typings/interface").CacheOption<bigint, import("../structures").Message | {
+        messages: import("./../typings/interface").CacheOption<bigint, Message | {
             id: string;
             channelId: string;
             author: {
@@ -583,7 +584,7 @@ export declare class Client<rawData extends (boolean) = false> {
         }> | {
             limit: number;
             sweepType: "timedSweep";
-            cacheFunc: (_val: import("../structures").Message | {
+            cacheFunc: (_val: Message | {
                 id: string;
                 channelId: string;
                 author: {
@@ -1644,7 +1645,8 @@ export declare class Client<rawData extends (boolean) = false> {
             sweepFunc: undefined;
         };
     };
-    getAuditLogs(): void;
+    getChannel(channelId: rawData extends true ? snowflake : Snowflake, fetch?: boolean): Promise<(rawData extends true ? rawChannelData : Channel) | undefined>;
+    modifyChannel(channelId: rawData extends true ? snowflake : Snowflake, data: rawData extends true ? modifyRawChannelData : modifyChannelData): Promise<rawData extends true ? rawChannelData : Channel>;
     sendMessage(channelId: Snowflake, msgData: {
         content: string;
     }): Promise<rawMessageData>;

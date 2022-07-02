@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sizeOf = exports.parsePermissions = exports.cleanObject = exports.ConvertObjectToCamelCase = exports.ConvertObjectToSnakeCase = exports.convertEventstoPascalCase = exports.toSnakeCase = exports.toCamelCase = void 0;
+exports.imagetobase64 = exports.sizeOf = exports.parsePermissions = exports.cleanObject = exports.ConvertObjectToCamelCase = exports.ConvertObjectToSnakeCase = exports.convertEventstoPascalCase = exports.toSnakeCase = exports.toCamelCase = void 0;
+const undici_1 = require("undici");
 const v8_1 = __importDefault(require("v8"));
 const constants_1 = require("./constants");
 function toCamelCase(value) {
@@ -105,4 +106,9 @@ function sizeOf(data) {
     return v8_1.default.serialize(data).byteLength;
 }
 exports.sizeOf = sizeOf;
+async function imagetobase64(url) {
+    const data = await (0, undici_1.fetch)(url);
+    return data.headers.get('content-type') + ";base64;" + Buffer.from(await data.arrayBuffer()).toString('base64');
+}
+exports.imagetobase64 = imagetobase64;
 //# sourceMappingURL=functions.js.map

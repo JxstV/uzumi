@@ -34,8 +34,10 @@ export default async function handle<T extends boolean> ( data: GUILD_CREATE, cl
         client.cache?.users?.set( ( <rawUserData> member.user ).id, <rawUserData> member.user );
       } else
       {
+        const user = new User( <rawUserData> member.user, client );
+        user.guilds.push( ParsedData.id );
         //@ts-ignore: data is always parsed here
-        client.cache?.users?.set( BigInt( ( <rawUserData> member.user ).id ), new User( <rawUserData> member.user, client ) );
+        client.cache?.users?.set( BigInt( ( <rawUserData> member.user ).id ), user );
       }
     }
   }

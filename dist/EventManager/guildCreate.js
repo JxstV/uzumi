@@ -28,8 +28,10 @@ async function handle(data, client) {
                 client.cache?.users?.set(member.user.id, member.user);
             }
             else {
+                const user = new user_1.User(member.user, client);
+                user.guilds.push(ParsedData.id);
                 //@ts-ignore: data is always parsed here
-                client.cache?.users?.set(BigInt(member.user.id), new user_1.User(member.user, client));
+                client.cache?.users?.set(BigInt(member.user.id), user);
             }
         }
     }

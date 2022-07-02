@@ -185,6 +185,12 @@ export declare class Guild {
             web?: string | undefined;
         };
     }>;
+    applicationCommandsCount: {
+        chatInput: number;
+        user: number;
+        message: number;
+        readonly total: any;
+    };
     constructor(data: GUILD_CREATE, client: Client<boolean>);
     clean(): void;
     get byteSize(): number;

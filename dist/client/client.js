@@ -14,6 +14,8 @@ const request_1 = require("../api/request");
 const functions_1 = require("../utils/functions");
 const index_1 = require("../group/index");
 const messageSweeper_1 = require("../sweepers/messageSweeper");
+const channel_1 = require("../structures/channel");
+const structures_1 = require("../structures");
 class Client {
     constructor(clientOptions, rawData) {
         _Client_instances.add(this);
@@ -198,9 +200,43 @@ class Client {
         };
     }
     //Audit Logs
-    getAuditLogs() { }
     //Channels
-    sendMessage(channelId, msgData) {
+    async getChannel(channelId, fetch = false) {
+        if (this.cache?.channels && !fetch) {
+            return this.cache.channels.get(channelId);
+        }
+        else {
+            const data = {
+                method: "GET",
+                url: (0, constants_1.api)(`channels/${channelId}`),
+                route: `channels/${channelId}`
+            };
+            const res = await (0, request_1.requestApi)(data, this);
+            //@ts-ignore:it's fine 🔥🔥
+            return (this.rawData ? res : new channel_1.Channel(res, this.cache?.channels?.get(res.id)?.[this.rawData ? 'guild_id' : 'guildId'], this));
+        }
+    }
+    async modifyChannel(channelId, data) {
+        let reqData = {
+            method: 'PATCH',
+            route: `channels/${channelId}`,
+            auditLogReason: data.reason,
+            url: (0, constants_1.api)(`channels/${channelId}`),
+        };
+        delete data.reason;
+        if (this.rawData) {
+            reqData.params = data;
+        }
+        else {
+            const parsedData = (0, functions_1.ConvertObjectToSnakeCase)(data);
+            parsedData.rate_limit_per_user = parsedData.slowmode;
+            delete parsedData.slowmode;
+            reqData.params = parsedData;
+        }
+        const res = await (0, request_1.requestApi)(reqData, this);
+        return this.rawData ? res : new channel_1.Channel(res, res.guild_id, this);
+    }
+    async sendMessage(channelId, msgData) {
         const route = `channels/${channelId}`;
         const url = (0, constants_1.api)(`${route}/messages`);
         const data = {
@@ -209,7 +245,8 @@ class Client {
             method: "POST",
             params: (0, functions_1.ConvertObjectToSnakeCase)(msgData),
         };
-        return (0, request_1.requestApi)(data, this);
+        const res = await (0, request_1.requestApi)(data, this);
+        return this.rawData ? res : new structures_1.Message(res, this);
     }
 }
 exports.Client = Client;

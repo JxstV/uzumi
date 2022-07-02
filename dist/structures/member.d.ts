@@ -1,6 +1,7 @@
 import { Client } from "../client/client";
 import { ImageOptions, rawMemberData } from "../typings/interface";
 import { snowflake } from "../typings/types";
+import { User } from './user';
 export declare class Member {
     #private;
     avatar?: string | null | undefined;
@@ -31,6 +32,7 @@ export declare class Member {
     clean(): void;
     toString(): string;
     get byteSize(): number;
+    getUser(): Promise<User>;
     avatarUrl({ size, animated, format }?: ImageOptions): string | null | undefined;
 }
 //# sourceMappingURL=member.d.ts.map

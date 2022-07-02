@@ -514,4 +514,38 @@ export interface ImageOptions {
     animated?: boolean;
     format?: ".webp" | ".png" | ".jpg" | ".gif";
 }
+export interface modifyRawChannelData {
+    name?: string;
+    type?: integer;
+    position?: null | integer;
+    topic?: null | string;
+    nsfw?: null | boolean;
+    rate_limit_per_user?: null | integer;
+    bitrate?: null | integer;
+    user_limit?: null | integer;
+    permission_overwrites?: Array<rawOverwriteData>;
+    parent_id?: null | snowflake;
+    rtc_region?: null | string;
+    video_quality_mode?: null | integer;
+    default_auto_archive_duration?: null | integer;
+    icon?: string;
+    reason?: string;
+}
+export interface modifyChannelData {
+    name?: string;
+    type?: integer;
+    position?: null | integer;
+    topic?: null | string;
+    nsfw?: null | boolean;
+    slowmode?: null | integer;
+    bitrate?: null | integer;
+    userLimit?: null | integer;
+    permissionOverwrites?: Array<rawOverwriteData>;
+    parentId?: null | snowflake;
+    rtcRegion?: null | string;
+    videoQualityMode?: null | integer;
+    defaultAutoArchiveDuration?: null | integer;
+    icon?: string;
+    reason?: string;
+}
 //# sourceMappingURL=interface.d.ts.map

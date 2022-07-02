@@ -27,6 +27,12 @@ export interface READY {
 export interface GUILD_CREATE extends rawGuildData {
     joined_at: string;
     large: boolean;
+    lazy: boolean;
+    application_command_counts: {
+        '1': number;
+        '2': number;
+        '3': number;
+    };
     unavailable: boolean;
     member_count: integer;
     voice_states: Array<rawVoiceStateData>;

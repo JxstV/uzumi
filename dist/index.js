@@ -18,6 +18,8 @@ __exportStar(require("./api/request"), exports);
 __exportStar(require("./client/client"), exports);
 __exportStar(require("./EventManager/index"), exports);
 __exportStar(require("./EventManager/messageCreate"), exports);
+__exportStar(require("./EventManager/guildCreate"), exports);
+__exportStar(require("./EventManager/ready"), exports);
 __exportStar(require("./typings/enums"), exports);
 __exportStar(require("./typings/eventInterfaces"), exports);
 __exportStar(require("./typings/interface"), exports);
@@ -25,4 +27,7 @@ __exportStar(require("./typings/types"), exports);
 __exportStar(require("./utils/constants"), exports);
 __exportStar(require("./utils/functions"), exports);
 __exportStar(require("./websocket/startUp"), exports);
+__exportStar(require("./structures"), exports);
+__exportStar(require("./sweepers"), exports);
+__exportStar(require("./group"), exports);
 //# sourceMappingURL=index.js.map

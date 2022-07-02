@@ -60,12 +60,22 @@ export class Guild
     rawData: GUILD_CREATE;
     stickers?: Group<bigint, Sticker> | undefined;
     presences: Group<bigint, { user: User; guildId: string; status: "online" | "offline" | "idle" | "dnd"; activities: { name: string; type: number; url?: string | null | undefined; createdAt: number; timestamps?: { start?: number | undefined; end?: number | undefined; } | undefined; applicationId?: string | undefined; details?: string | null | undefined; state?: string | null | undefined; emoji?: { id: string | null; name: string | null; roles?: string[] | undefined; user?: { id: string; username: string; discriminator: string; avatar: string | null; bot?: boolean | undefined; system?: boolean | undefined; mfaEnabled?: boolean | undefined; banner?: string | null | undefined; accentColor?: number | null | undefined; locale?: string | undefined; verified?: boolean | undefined; email?: string | null | undefined; flags?: number | undefined; premiumType?: number | undefined; publicFlags?: number | undefined; } | undefined; requireColons?: boolean | undefined; managed?: boolean | undefined; animated?: boolean | undefined; available?: boolean | undefined; } | undefined; party?: { id?: string | undefined; size?: [ current_size: number, max_size: number ] | undefined; } | undefined; assets?: { largeImage?: string | undefined; largeText?: string | undefined; smallImage?: string | undefined; smallText?: string | undefined; } | undefined; secrets?: { join?: string | undefined; spectate?: string | undefined; match?: string | undefined; } | undefined; instance?: boolean | undefined; flags?: number | undefined; buttons?: { label: string; url: string; }[] | undefined; }[]; clientStatus: { desktop?: string | undefined; mobile?: string | undefined; web?: string | undefined; }; }>;
+    applicationCommandsCount: { chatInput: number; user: number; message: number; readonly total: any; };
     constructor ( data: GUILD_CREATE, client: Client<boolean> )
     {
         this.#client = client;
         this.afkChannel = {
             id: data.afk_channel_id ? BigInt( data.afk_channel_id ) : null,
             timeout: data.afk_timeout,
+        };
+        this.applicationCommandsCount = {
+            chatInput: data.application_command_counts[ '1' ],
+            user: data.application_command_counts[ '2' ],
+            message: data.application_command_counts[ '3' ],
+            get total ()
+            {
+                return this.chatInput + this.user + this.message;
+            }
         };
         this.applicationId = data.application_id;
         this.approx = {

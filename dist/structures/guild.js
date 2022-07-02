@@ -29,6 +29,14 @@ class Guild {
             id: data.afk_channel_id ? BigInt(data.afk_channel_id) : null,
             timeout: data.afk_timeout,
         };
+        this.applicationCommandsCount = {
+            chatInput: data.application_command_counts['1'],
+            user: data.application_command_counts['2'],
+            message: data.application_command_counts['3'],
+            get total() {
+                return this.chatInput + this.user + this.message;
+            }
+        };
         this.applicationId = data.application_id;
         this.approx = {
             members: data.approximate_member_count,

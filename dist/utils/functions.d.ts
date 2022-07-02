@@ -6,4 +6,5 @@ export declare function ConvertObjectToCamelCase(object: Record<string, any>): R
 export declare function cleanObject(object: Record<string, any>): Record<string, any>;
 export declare function parsePermissions(bit: bigint | null): string[];
 export declare function sizeOf(data: unknown): number;
+export declare function imagetobase64(url: string): Promise<string>;
 //# sourceMappingURL=functions.d.ts.map

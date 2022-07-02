@@ -1,4 +1,5 @@
-import v8 from 'v8'
+import { fetch, request, stream } from 'undici';
+import v8 from 'v8';
 import { Permissions } from './constants';
 export function toCamelCase ( value: string ): string
 {
@@ -123,4 +124,10 @@ export function parsePermissions ( bit: bigint | null )
 export function sizeOf ( data: unknown )
 {
   return v8.serialize( data ).byteLength;
+}
+
+export async function imagetobase64 ( url: string )
+{
+  const data = await fetch( url );
+  return data.headers.get( 'content-type' ) + ";base64;" + Buffer.from( await data.arrayBuffer() ).toString( 'base64' );
 }

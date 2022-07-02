@@ -1,18 +1,18 @@
 import { Message } from "../structures/message";
 import { Client } from "./../client/client";
 import
-  {
-    rawApplicationData,
-    rawChannelData,
-    rawGuildData,
-    rawMemberData,
-    rawMessageData,
-    rawPresenceUpdateData,
-    rawScheduledEventsData,
-    rawStageInstanceData,
-    rawUserData,
-    rawVoiceStateData,
-  } from "./interface";
+{
+  rawApplicationData,
+  rawChannelData,
+  rawGuildData,
+  rawMemberData,
+  rawMessageData,
+  rawPresenceUpdateData,
+  rawScheduledEventsData,
+  rawStageInstanceData,
+  rawUserData,
+  rawVoiceStateData,
+} from "./interface";
 import { integer, SnakeToCamelCaseNested, snowflake } from "./types";
 export interface EventManager<T>
 {
@@ -49,6 +49,12 @@ export interface GUILD_CREATE extends rawGuildData
 {
   joined_at: string; //	when this guild was joined at
   large: boolean; //	true if this is considered a large guild
+  lazy: boolean;
+  application_command_counts: {
+    '1': number;
+    '2': number;
+    '3': number;
+  };
   unavailable: boolean; //	true if this guild is unavailable due to an outage
   member_count: integer; //	total number of members in this guild
   voice_states: Array<rawVoiceStateData>; //	states of members currently in voice channels; lacks the guild_id key

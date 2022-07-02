@@ -4,7 +4,6 @@ import { AyayaError } from "../errors/AyayaError";
 import { requestData, requestOption, RoutedData } from "../typings/interface";
 import { userAgent } from "../utils/constants";
 import { ConvertObjectToSnakeCase } from "../utils/functions";
-
 export async function nonRouteRequest<T extends boolean>(
   data: requestData,
   options: requestOption,
